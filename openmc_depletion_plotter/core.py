@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-
-
+import pint
+ureg = pint.UnitRegistry()
 def heatmap(data, row_labels, col_labels, ax=None,
             cbar_kw={}, cbarlabel="", **kwargs):
     """
@@ -122,6 +122,28 @@ def annotate_heatmap(im, data=None, valfmt="{x:.2f}",
 
 stables=['H1','H2','He3','He4','Li6','Li7','Be9','B10','B11','C12','C13','C14','N14','N15','O16','F19','Ne20','Ne21','Ne22','Na23','Mg24','Mg25','Mg26','Al27','Si28','Si29','Si30','P31','S32','S33','S34','S36','Cl35','Cl37','Ar36','Ar38','Ar40','K39','K40','K41','Ca40','Ca42','Ca43','Ca44','Ca46','Ca48','Sc45','Ti46','Ti47','Ti48','Ti49','Ti50','V50','V51','Cr50','Cr52','Cr53','Cr54','Mn55','Fe54','Fe56','Fe57','Fe58','Co59','Ni58','Ni60','Ni61','Ni62','Ni64','Cu63','Cu65','Zn64','Zn66','Zn67','Zn68','Zn70','Ga69','Ga71','Ge70','Ge72','Ge73','Ge74','Ge76','As75','Se74','Se76','Se77','Se78','Se80','Se82','Br79','Br81','Kr78','Kr80','Kr82','Kr83','Kr84','Kr86','Rb85','Rb87','Sr84','Sr86','Sr87','Sr88','Y89','Zr90','Zr91','Zr92','Zr94','Zr96','Nb93','Mo92','Mo94','Mo95','Mo96','Mo97','Mo98','Mo100','Ru96','Ru98','Ru99','Ru100','Ru101','Ru102','Ru104','Rh103','Pd102','Pd104','Pd105','Pd106','Pd108','Pd110','Ag107','Ag109','Cd106','Cd108','Cd110','Cd111','Cd112','Cd113','Cd114','Cd116','In113','In115','Sn112','Sn114','Sn115','Sn116','Sn117','Sn118','Sn119','Sn120','Sn122','Sn124','Sb121','Sb123','Te120','Te122','Te123','Te124','Te125','Te126','Te128','Te130','I127','Xe124','Xe126','Xe128','Xe129','Xe130','Xe131','Xe132','Xe134','Xe136','Cs133','Ba130','Ba132','Ba134','Ba135','Ba136','Ba137','Ba138','La138','La139','Ce136','Ce138','Ce140','Ce142','Pr141','Nd142','Nd143','Nd144','Nd145','Nd146','Nd148','Nd150','Sm144','Sm147','Sm148','Sm149','Sm150','Sm152','Sm154','Eu151','Eu153','Gd152','Gd154','Gd155','Gd156','Gd157','Gd158','Gd160','Tb159','Dy156','Dy158','Dy160','Dy161','Dy162','Dy163','Dy164','Ho165','Er162','Er164','Er166','Er167','Er168','Er170','Tm169','Yb168','Yb170','Yb171','Yb172','Yb173','Yb174','Yb176','Lu175','Lu176','Hf174','Hf176','Hf177','Hf178','Hf179','Hf180','Ta180','Ta181','W180','W182','W183','W184','W186','Re185','Re187','Os184','Os186','Os187','Os188','Os189','Os190','Os192','Ir191','Ir193','Pt190','Pt192','Pt194','Pt195','Pt196','Pt198','Au197','Hg196','Hg198','Hg199','Hg200','Hg201','Hg202','Hg204','Tl203','Tl205','Pb204','Pb206','Pb207','Pb208','Bi209','Th232','Pa231','U234','U235','U238']
 
+ATOMIC_SYMBOL = {0: ' ', 1: 'H', 2: 'He', 3: 'Li', 4: 'Be', 5: 'B', 6: 'C',
+                 7: 'N', 8: 'O', 9: 'F', 10: 'Ne', 11: 'Na', 12: 'Mg', 13: 'Al',
+                 14: 'Si', 15: 'P', 16: 'S', 17: 'Cl', 18: 'Ar', 19: 'K',
+                 20: 'Ca', 21: 'Sc', 22: 'Ti', 23: 'V', 24: 'Cr', 25: 'Mn',
+                 26: 'Fe', 27: 'Co', 28: 'Ni', 29: 'Cu', 30: 'Zn', 31: 'Ga',
+                 32: 'Ge', 33: 'As', 34: 'Se', 35: 'Br', 36: 'Kr', 37: 'Rb',
+                 38: 'Sr', 39: 'Y', 40: 'Zr', 41: 'Nb', 42: 'Mo', 43: 'Tc',
+                 44: 'Ru', 45: 'Rh', 46: 'Pd', 47: 'Ag', 48: 'Cd', 49: 'In',
+                 50: 'Sn', 51: 'Sb', 52: 'Te', 53: 'I', 54: 'Xe', 55: 'Cs',
+                 56: 'Ba', 57: 'La', 58: 'Ce', 59: 'Pr', 60: 'Nd', 61: 'Pm',
+                 62: 'Sm', 63: 'Eu', 64: 'Gd', 65: 'Tb', 66: 'Dy', 67: 'Ho',
+                 68: 'Er', 69: 'Tm', 70: 'Yb', 71: 'Lu', 72: 'Hf', 73: 'Ta',
+                 74: 'W', 75: 'Re', 76: 'Os', 77: 'Ir', 78: 'Pt', 79: 'Au',
+                 80: 'Hg', 81: 'Tl', 82: 'Pb', 83: 'Bi', 84: 'Po', 85: 'At',
+                 86: 'Rn', 87: 'Fr', 88: 'Ra', 89: 'Ac', 90: 'Th', 91: 'Pa',
+                 92: 'U', 93: 'Np', 94: 'Pu', 95: 'Am', 96: 'Cm', 97: 'Bk',
+                 98: 'Cf', 99: 'Es', 100: 'Fm', 101: 'Md', 102: 'No',
+                 103: 'Lr', 104: 'Rf', 105: 'Db', 106: 'Sg', 107: 'Bh',
+                 108: 'Hs', 109: 'Mt', 110: 'Ds', 111: 'Rg', 112: 'Cn',
+                 113: 'Nh', 114: 'Fl', 115: 'Mc', 116: 'Lv', 117: 'Ts',
+                 118: 'Og'}
+
 number_of_protons_in_axis = 10
 number_of_neutrons_in_axis = 8
 
@@ -154,11 +176,14 @@ ax.set_yticks(np.arange(len(neutrons)), labels=neutrons)
 #          rotation_mode="anchor")
 
 # Loop over data dimensions and create text annotations.
+counter= 0
 for j in range(number_of_protons_in_axis):
     for i in range(number_of_neutrons_in_axis):
         print(i,j, isotope_chart[i, j])
-        text = ax.text(j, i, isotope_chart[i, j],
+        # text = ax.text(j, i, isotope_chart[i, j],
+        text = ax.text(j, i, f'{ATOMIC_SYMBOL[j]}{i+j} {isotope_chart[i, j]}',
                        ha="center", va="center", color="w")
+        counter = counter +1
 
 plt.gca().invert_yaxis()
 
@@ -170,7 +195,29 @@ ax.set_ylabel("Number of neutrons")
 # ax1.set_xlim(0,4)
 
 fig.tight_layout()
-plt.show()
+# plt.show()
 
 # get_nuclide_densities()
 # get_nuclide_atom_densities()
+
+import openmc
+my_mat = openmc.Material()
+my_mat.add_element('Fe', 1)
+my_mat.set_density('g/cm3', 7.7)
+my_mat.volume = 1
+my_mat.density
+
+# in units of atom / ( barn cm2 )
+atoms_per_barn_cm2 = my_mat.get_nuclide_atom_densities()
+volume = my_mat.volume *  ureg.cm ** 3
+
+print(atoms_per_barn_cm2)
+for key, value in atoms_per_barn_cm2.items():
+    print(key, value[1])
+    atoms_per_b_cm = value[1] * ureg.particle / (ureg.barn *  ureg.cm)
+    atoms = atoms_per_b_cm * volume
+    print(key, atoms)
+    print(key, atoms.to(ureg.particle))
+
+
+print(atoms_per_barn_cm2)
