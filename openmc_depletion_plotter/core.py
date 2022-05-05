@@ -9,6 +9,7 @@ from matplotlib.colors import Normalize
 from openmc.data import NATURAL_ABUNDANCE, ATOMIC_SYMBOL
 import seaborn as sns
 import pint
+
 ureg = pint.UnitRegistry()
 
 
@@ -45,8 +46,8 @@ def get_atoms_from_material(material):
 
 def build_grid_of_nuclides(iterable_of_nuclides):
 
-    grid_width = 100  # protons
-    grid_height = 100  # neutrons
+    grid_width = 200  # protons
+    grid_height = 200  # neutrons
     grid = np.array([[0]*grid_width]*grid_height, dtype=float)
 
 
@@ -59,8 +60,8 @@ def build_grid_of_nuclides(iterable_of_nuclides):
 def build_grid_of_stable_nuclides(iterable_of_nuclides):
 
 
-    grid_width = 100  # protons
-    grid_height = 100  # neutrons
+    grid_width = 200  # protons
+    grid_height = 200  # neutrons
     grid = np.array([[0]*grid_width]*grid_height, dtype=float)
 
 
@@ -72,8 +73,8 @@ def build_grid_of_stable_nuclides(iterable_of_nuclides):
 
 def build_grid_of_annotations(iterable_of_nuclides):
 
-    grid_width = 100  # protons
-    grid_height = 100  # neutrons
+    grid_width = 200  # protons
+    grid_height = 200  # neutrons
     grid = np.array([[0]*grid_width]*grid_height, dtype=str)
 
     for atomic_number, neutron_number, atoms, name in iterable_of_nuclides:
@@ -89,13 +90,18 @@ for entry in stable_nuclides:
 my_mat = openmc.Material()
 my_mat.add_element('Fe', 1)
 my_mat.add_element('Li', 0.5)
+my_mat.add_element('Be', 0.5)
+my_mat.add_element('Al', 0.5)
+my_mat.add_element('B', 0.5)
+my_mat.add_element('Bi', 0.5)
+my_mat.add_element('Co', 0.5)
 my_mat.set_density('g/cm3', 7.7)
 my_mat.volume = 1
 
 nuclides=get_atoms_from_material(my_mat)
 grid = build_grid_of_nuclides(nuclides)
 annots = build_grid_of_annotations(nuclides)
-stable_grid = build_grid_of_stable_nuclides([(1,1),(3,3),(3,2),(10,10)])
+stable_grid = build_grid_of_stable_nuclides(stable_nuclides_za)
 
 
 
@@ -164,10 +170,10 @@ ax2.set_xlim(0, grid_width)
 ax2.set_ylim(0, grid_height)
 
 
-counter = 0
+
 for j in range(grid.shape[1]):
     for i in range(grid.shape[0]):
-        # print(i,j, grid[i, j])
+        print(i,j, grid[i, j])
         # text = ax.text(j, i, isotope_chart[i, j],
 
         if grid[i, j] > 0:
@@ -175,7 +181,7 @@ for j in range(grid.shape[1]):
             text = ax.text(
                 j+0.5,
                 i+0.66,
-                f'{ATOMIC_SYMBOL[j]}{i+j}',
+                f'{ATOMIC_SYMBOL[i]}{i+j}',
                 ha="center",
                 va="center",
                 color="w",
@@ -195,13 +201,13 @@ for j in range(grid.shape[1]):
             text = ax.text(
                 j+0.5,
                 i+0.66,
-                f'{ATOMIC_SYMBOL[j]}{i+j}',
+                f'{ATOMIC_SYMBOL[i]}{i+j}',
                 ha="center",
                 va="center",
                 color="w",
                 fontdict={'size': 3}
             )
-        counter = counter + 1
+
 
 plt.savefig('nuclide-halflifes.png', dpi=200)
 # plt.show()
