@@ -1,20 +1,16 @@
-from pydoc import visiblename
+
+import matplotlib.pyplot as plt
+import numpy as np
 import openmc
-import numpy as np
-import matplotlib.pyplot as plt
-import numpy as np
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-from matplotlib.colors import Normalize
-from openmc.data import NATURAL_ABUNDANCE, ATOMIC_SYMBOL
-import seaborn as sns
 import pint
+import seaborn as sns
+# from matplotlib.colors import Normalize
+from openmc.data import ATOMIC_SYMBOL, NATURAL_ABUNDANCE
+import matplotlib.cm as cm
 
 ureg = pint.UnitRegistry()
 
-
 stable_nuclides = list(NATURAL_ABUNDANCE.keys())
-
 
 
 def get_atoms_from_material(material):
@@ -44,18 +40,19 @@ def get_atoms_from_material(material):
     # print(atoms_per_barn_cm2)
     return isotopes_and_atoms
 
+
 def build_grid_of_nuclides(iterable_of_nuclides):
 
     grid_width = 200  # protons
     grid_height = 200  # neutrons
     grid = np.array([[0]*grid_width]*grid_height, dtype=float)
 
-
     for atomic_number, neutron_number, atoms, _ in iterable_of_nuclides:
         # print(atomic_number,neutron_number,atoms )
         grid[atomic_number][neutron_number] = atoms
 
     return grid
+
 
 def build_grid_of_stable_nuclides(iterable_of_nuclides):
 
@@ -71,6 +68,7 @@ def build_grid_of_stable_nuclides(iterable_of_nuclides):
 
     return grid
 
+
 def build_grid_of_annotations(iterable_of_nuclides):
 
     grid_width = 200  # protons
@@ -81,6 +79,24 @@ def build_grid_of_annotations(iterable_of_nuclides):
         grid[atomic_number][neutron_number] = name
 
     return grid
+
+
+
+# Get the colormap and set the under and bad colors
+# colMap = cm.gist_rainbow
+def make_unstable_cm():
+    colMap = cm.get_cmap('viridis', 256)
+    colMap.set_bad(color='white', alpha=100)
+    colMap.set_under(color='white', alpha=100)
+    return colMap
+
+
+def make_stable_cm():
+    colMap = cm.get_cmap('gray_r', 256)
+    colMap.set_bad(color='white', alpha=100)
+    colMap.set_under(color='white', alpha=100)
+    return colMap
+
 
 stable_nuclides_za=[]
 for entry in stable_nuclides:
@@ -115,20 +131,9 @@ sns.set_style("darkgrid", {"axes.facecolor": ".9"})
 data_masked = np.ma.masked_where(grid != 0, grid)
 # plt.imshow(data_masked, interpolation = 'none', vmin = 0)
 
-import matplotlib.cm as cm
-# Get the colormap and set the under and bad colors
-# colMap = cm.gist_rainbow
-def make_unstable_cm():
-    colMap = cm.get_cmap('viridis', 256)
-    colMap.set_bad(color='white', alpha=100)
-    colMap.set_under(color='white', alpha=100)
-    return colMap
-    
-def make_stable_cm():
-    colMap = cm.get_cmap('gray_r', 256)
-    colMap.set_bad(color='white', alpha=100)
-    colMap.set_under(color='white', alpha=100)
-    return colMap
+
+
+
 
 
 ax2 = sns.heatmap(stable_grid,
