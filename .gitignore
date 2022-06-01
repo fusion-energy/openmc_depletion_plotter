@@ -130,3 +130,9 @@ dmypy.json
 
 # output images
 *.png
+
+# version file
+_version.py
+
+# output xml files from openmc
+*.xml

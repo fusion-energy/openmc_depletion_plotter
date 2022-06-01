@@ -98,121 +98,110 @@ def make_stable_cm():
     return colMap
 
 
-stable_nuclides_za=[]
-for entry in stable_nuclides:
-    atomic_number, mass_number, _ = openmc.data.zam(entry)
-    stable_nuclides_za.append((atomic_number,mass_number-atomic_number))
-
-my_mat = openmc.Material()
-my_mat.add_element('Fe', 1)
-my_mat.add_element('Li', 0.5)
-my_mat.add_element('Be', 0.5)
-my_mat.add_element('Al', 0.5)
-my_mat.add_element('B', 0.5)
-my_mat.add_element('Bi', 0.5)
-my_mat.add_element('Co', 0.5)
-my_mat.set_density('g/cm3', 7.7)
-my_mat.volume = 1
-
-nuclides=get_atoms_from_material(my_mat)
-grid = build_grid_of_nuclides(nuclides)
-annots = build_grid_of_annotations(nuclides)
-stable_grid = build_grid_of_stable_nuclides(stable_nuclides_za)
 
 
+def plot_material(my_mat):
 
-
-sns.set_theme()
-# sns.set_style("whitegrid")
-sns.set_style("darkgrid", {"axes.facecolor": ".9"})
-# sns.set_style("white")
-
-# masked_array = np.ma.array (grid, mask=np.zeros(grid))
-data_masked = np.ma.masked_where(grid != 0, grid)
-# plt.imshow(data_masked, interpolation = 'none', vmin = 0)
-
-
-
-
-
-
-ax2 = sns.heatmap(stable_grid,
-    square=True,
-    cmap=make_stable_cm(),
-    cbar=False,
-    linewidths=0,
-)
-
-ax = sns.heatmap(grid,
-    linewidths=.1,
-    vmin=2.204575507634703e+20,
-    vmax=7.173000749202642e+22,
-    square=True,
-    cmap=make_unstable_cm(),
-    cbar_kws={'label': 'number of atoms'},
-    # annot=True,
-    # interpolation = 'none',
-    # mask=data_masked
-)
-plt.gca().set_facecolor("white")
-plt.gca().invert_yaxis()
-
-grid_width = 40  # neutrons
-grid_height = 30  # protons
-ax.set_xlim(0, grid_width)
-ax.set_ylim(0, grid_height)
-
-ax.set_title("Number of atoms in material")
-ax.set_ylabel("Number of protons")
-ax.set_xlabel("Number of neutrons")
-ax.grid(True)
-# ax.grid(True, which='both')
-ax.axhline(y=0, color='k')
-ax.axvline(x=0, color='k')
-
-
-ax2.set_xlim(0, grid_width)
-ax2.set_ylim(0, grid_height)
-
-
-
-for j in range(grid.shape[1]):
-    for i in range(grid.shape[0]):
-        print(i,j, grid[i, j])
-        # text = ax.text(j, i, isotope_chart[i, j],
-
-        if grid[i, j] > 0:
-
-            text = ax.text(
-                j+0.5,
-                i+0.66,
-                f'{ATOMIC_SYMBOL[i]}{i+j}',
-                ha="center",
-                va="center",
-                color="w",
-                fontdict={'size': 3}
-            )
-            text = ax.text(
-                j+0.5,
-                i+0.33,
-                f'{grid[i, j]:.1e}',
-                ha="center",
-                va="center",
-                color="w",
-                fontdict={'size': 2}
-            )
+    stable_nuclides_za=[]
+    for entry in stable_nuclides:
+        atomic_number, mass_number, _ = openmc.data.zam(entry)
+        stable_nuclides_za.append((atomic_number,mass_number-atomic_number))
         
-        if (i, j) in stable_nuclides_za:
-            text = ax.text(
-                j+0.5,
-                i+0.66,
-                f'{ATOMIC_SYMBOL[i]}{i+j}',
-                ha="center",
-                va="center",
-                color="w",
-                fontdict={'size': 3}
-            )
+    nuclides=get_atoms_from_material(my_mat)
+    grid = build_grid_of_nuclides(nuclides)
+    annots = build_grid_of_annotations(nuclides)
+    stable_grid = build_grid_of_stable_nuclides(stable_nuclides_za)
 
 
-plt.savefig('nuclide-halflifes.png', dpi=200)
-# plt.show()
+    sns.set_theme()
+    # sns.set_style("whitegrid")
+    sns.set_style("darkgrid", {"axes.facecolor": ".9"})
+    # sns.set_style("white")
+
+    # masked_array = np.ma.array (grid, mask=np.zeros(grid))
+    data_masked = np.ma.masked_where(grid != 0, grid)
+    # plt.imshow(data_masked, interpolation = 'none', vmin = 0)
+
+
+
+
+    ax2 = sns.heatmap(stable_grid,
+        square=True,
+        cmap=make_stable_cm(),
+        cbar=False,
+        linewidths=0,
+    )
+
+    ax = sns.heatmap(grid,
+        linewidths=.1,
+        vmin=2.204575507634703e+20,
+        vmax=7.173000749202642e+22,
+        square=True,
+        cmap=make_unstable_cm(),
+        cbar_kws={'label': 'number of atoms'},
+        # annot=True,
+        # interpolation = 'none',
+        # mask=data_masked
+    )
+    plt.gca().set_facecolor("white")
+    plt.gca().invert_yaxis()
+
+    grid_width = 40  # neutrons
+    grid_height = 30  # protons
+    ax.set_xlim(0, grid_width)
+    ax.set_ylim(0, grid_height)
+
+    ax.set_title("Number of atoms in material")
+    ax.set_ylabel("Number of protons")
+    ax.set_xlabel("Number of neutrons")
+    ax.grid(True)
+    # ax.grid(True, which='both')
+    ax.axhline(y=0, color='k')
+    ax.axvline(x=0, color='k')
+
+
+    ax2.set_xlim(0, grid_width)
+    ax2.set_ylim(0, grid_height)
+
+
+
+    for j in range(grid.shape[1]):
+        for i in range(grid.shape[0]):
+            print(i,j, grid[i, j])
+            # text = ax.text(j, i, isotope_chart[i, j],
+
+            if grid[i, j] > 0:
+
+                text = ax.text(
+                    j+0.5,
+                    i+0.66,
+                    f'{ATOMIC_SYMBOL[i]}{i+j}',
+                    ha="center",
+                    va="center",
+                    color="w",
+                    fontdict={'size': 3}
+                )
+                text = ax.text(
+                    j+0.5,
+                    i+0.33,
+                    f'{grid[i, j]:.1e}',
+                    ha="center",
+                    va="center",
+                    color="w",
+                    fontdict={'size': 2}
+                )
+            
+            if (i, j) in stable_nuclides_za:
+                text = ax.text(
+                    j+0.5,
+                    i+0.66,
+                    f'{ATOMIC_SYMBOL[i]}{i+j}',
+                    ha="center",
+                    va="center",
+                    color="w",
+                    fontdict={'size': 3}
+                )
+
+
+    plt.savefig('nuclide-halflifes.png', dpi=200)
+    # plt.show()
