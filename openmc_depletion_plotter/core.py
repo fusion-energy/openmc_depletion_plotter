@@ -124,7 +124,10 @@ def plot_material(
     filename=None,
     neutron_range=None,
     proton_range=None,
+    isotopes_label_size=None
     ):
+
+    plt.figure().clear()
 
     stable_nuclides_za=[]
     for entry in stable_nuclides:
@@ -202,51 +205,51 @@ def plot_material(
 
     plt.xticks(rotation=0)
 
+    if isotopes_label_size is not None: 
 
+        for j in range(grid.shape[1]):
+            for i in range(grid.shape[0]):
+                # print(i,j, grid[i, j])
+                # text = ax.text(j, i, isotope_chart[i, j],
 
+                if grid[i, j] > 0:
 
-    for j in range(grid.shape[1]):
-        for i in range(grid.shape[0]):
-            # print(i,j, grid[i, j])
-            # text = ax.text(j, i, isotope_chart[i, j],
-
-            if grid[i, j] > 0:
-
-                text = ax.text(
-                    j+0.5,
-                    i+0.66,
-                    f'{ATOMIC_SYMBOL[i]}{i+j}',
-                    ha="center",
-                    va="center",
-                    color="w",
-                    fontdict={'size': 3}
-                )
-                text = ax.text(
-                    j+0.5,
-                    i+0.33,
-                    f'{grid[i, j]:.1e}',
-                    ha="center",
-                    va="center",
-                    color="w",
-                    fontdict={'size': 2}
-                )
-            
-            if (i, j) in stable_nuclides_za:
-                text = ax.text(
-                    j+0.5,
-                    i+0.66,
-                    f'{ATOMIC_SYMBOL[i]}{i+j}',
-                    ha="center",
-                    va="center",
-                    color="w",
-                    fontdict={'size': 3}
-                )
+                    text = ax.text(
+                        j+0.5,
+                        i+0.66,
+                        f'{ATOMIC_SYMBOL[i]}{i+j}',
+                        ha="center",
+                        va="center",
+                        color="w",
+                        fontdict={'size': isotopes_label_size}
+                    )
+                    text = ax.text(
+                        j+0.5,
+                        i+0.33,
+                        f'{grid[i, j]:.1e}',
+                        ha="center",
+                        va="center",
+                        color="w",
+                        fontdict={'size': isotopes_label_size}
+                    )
+                
+                if (i, j) in stable_nuclides_za:
+                    text = ax.text(
+                        j+0.5,
+                        i+0.66,
+                        f'{ATOMIC_SYMBOL[i]}{i+j}',
+                        ha="center",
+                        va="center",
+                        color="w",
+                        fontdict={'size': isotopes_label_size}
+                    )
 
 
     plt.axis('on')
+    plt.tight_layout()
     ax.set_axis_on()
     ax2.set_axis_on()
     if filename:
-        plt.savefig(filename, dpi=400)
+        plt.savefig(filename, dpi=800)
     return plt
     # plt.show()
