@@ -20,8 +20,8 @@ def get_atoms_from_material(material):
         raise ValueError(msg)
 
     # in units of atom / ( barn cm2 )
-    atoms_per_barn_cm2 = my_mat.get_nuclide_atom_densities()
-    volume = my_mat.volume *  ureg.cm ** 3
+    atoms_per_barn_cm2 = material.get_nuclide_atom_densities()
+    volume = material.volume *  ureg.cm ** 3
 
     # print(atoms_per_barn_cm2)
     isotopes_and_atoms = []
@@ -80,6 +80,25 @@ def build_grid_of_annotations(iterable_of_nuclides):
 
     return grid
 
+def get_neutron_range(material):
+    nucs = material.get_nuclides()
+
+    neutrons=[]
+    for nuc in nucs:
+        proton, proton_plus_neutron, _ = openmc.data.zam(nuc)
+        neutron = proton_plus_neutron - proton
+        neutrons.append(neutron)
+    return [min(neutrons), max(neutrons)]
+
+
+def get_proton_range(material):
+    nucs = material.get_nuclides()
+
+    protons=[]
+    for nuc in nucs:
+        proton, proton_plus_neutron, _ = openmc.data.zam(nuc)
+        protons.append(proton)
+    return [min(protons), max(protons)]
 
 
 # Get the colormap and set the under and bad colors
@@ -100,7 +119,12 @@ def make_stable_cm():
 
 
 
-def plot_material(my_mat):
+def plot_material(
+    my_mat,
+    filename=None,
+    neutron_range=None,
+    proton_range=None,
+    ):
 
     stable_nuclides_za=[]
     for entry in stable_nuclides:
@@ -121,9 +145,6 @@ def plot_material(my_mat):
     # masked_array = np.ma.array (grid, mask=np.zeros(grid))
     data_masked = np.ma.masked_where(grid != 0, grid)
     # plt.imshow(data_masked, interpolation = 'none', vmin = 0)
-
-
-
 
     ax2 = sns.heatmap(stable_grid,
         square=True,
@@ -146,28 +167,47 @@ def plot_material(my_mat):
     plt.gca().set_facecolor("white")
     plt.gca().invert_yaxis()
 
-    grid_width = 40  # neutrons
-    grid_height = 30  # protons
-    ax.set_xlim(0, grid_width)
-    ax.set_ylim(0, grid_height)
+    if neutron_range is None:
+        neutron_range = get_neutron_range(my_mat)
+        print('neutron_range', neutron_range)
+        neutron_range[0] = max(neutron_range[0]-1,0)
+        neutron_range[1] = neutron_range[1]+1+1  # todo remove this extra +1 which is currently needed
+        print('neutron_range', neutron_range)
+        
+    if proton_range is None:
+        proton_range = get_proton_range(my_mat)
+        print('proton_range', proton_range)
+        proton_range[0] = max(proton_range[0]-1,0)
+        proton_range[1] = proton_range[1]+1+1  # todo remove this extra +1 which is currently needed
+        print('proton_range', proton_range)
 
-    ax.set_title("Number of atoms in material")
+
+    ax.set_xlim(neutron_range[0], neutron_range[1])
+    ax.set_ylim(proton_range[0], proton_range[1])
+    ax2.set_xlim(neutron_range[0], neutron_range[1])
+    ax2.set_ylim(proton_range[0], proton_range[1])
+
+    # ax.set_title("Number of atoms in material")
     ax.set_ylabel("Number of protons")
     ax.set_xlabel("Number of neutrons")
     ax.grid(True)
     # ax.grid(True, which='both')
-    ax.axhline(y=0, color='k')
-    ax.axvline(x=0, color='k')
+    # ax.axhline(y=0, color='k')
+    # ax.axvline(x=0, color='k')
+    # plt.axvline(x=0, color='k')
 
+    # plt.axis('on')
+    # ax.axis('on')
+    # ax2.axis('on')
 
-    ax2.set_xlim(0, grid_width)
-    ax2.set_ylim(0, grid_height)
+    plt.xticks(rotation=0)
+
 
 
 
     for j in range(grid.shape[1]):
         for i in range(grid.shape[0]):
-            print(i,j, grid[i, j])
+            # print(i,j, grid[i, j])
             # text = ax.text(j, i, isotope_chart[i, j],
 
             if grid[i, j] > 0:
@@ -203,5 +243,10 @@ def plot_material(my_mat):
                 )
 
 
-    plt.savefig('nuclide-halflifes.png', dpi=200)
+    plt.axis('on')
+    ax.set_axis_on()
+    ax2.set_axis_on()
+    if filename:
+        plt.savefig(filename, dpi=400)
+    return plt
     # plt.show()
