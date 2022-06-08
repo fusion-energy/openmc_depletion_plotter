@@ -13,4 +13,4 @@ except PackageNotFoundError:
 
 __all__ = ["__version__"]
 
-from .core import plot_material
+from .core import plot_material, plot_materials

@@ -117,7 +117,20 @@ def make_stable_cm():
     return colMap
 
 
+def plot_materials(
+    my_mats,
+    filenames,
+    neutron_range=None,
+    proton_range=None,
+):
 
+    for filename, my_mat in zip(filenames, my_mats):
+        plot_material(
+            my_mat,
+            filename=filename,
+            neutron_range=neutron_range,
+            proton_range=proton_range,
+        )
 
 def plot_material(
     my_mat,
@@ -172,17 +185,13 @@ def plot_material(
 
     if neutron_range is None:
         neutron_range = get_neutron_range(my_mat)
-        print('neutron_range', neutron_range)
         neutron_range[0] = max(neutron_range[0]-1,0)
         neutron_range[1] = neutron_range[1]+1+1  # todo remove this extra +1 which is currently needed
-        print('neutron_range', neutron_range)
         
     if proton_range is None:
         proton_range = get_proton_range(my_mat)
-        print('proton_range', proton_range)
         proton_range[0] = max(proton_range[0]-1,0)
         proton_range[1] = proton_range[1]+1+1  # todo remove this extra +1 which is currently needed
-        print('proton_range', proton_range)
 
 
     ax.set_xlim(neutron_range[0], neutron_range[1])
