@@ -87,19 +87,37 @@ def test_two_similar_materials():
     assert nucs == ['Li7', 'Li6']
 
 
-def test_two_similar_materials():
+def test_openmc_material():
 
     my_mat = openmc.Material()
     my_mat.add_nuclide("Li6", 0.5)
     my_mat.add_nuclide("Li7", 0.5)
 
     my_mat_2 = openmc.Material()
-    my_mat_2.add_nuclide("Li6", 0.6)
-    my_mat_2.add_nuclide("Li7", 0.7)
+    my_mat_2.add_nuclide("Fe56", 0.6)
+    my_mat_2.add_nuclide("Be9", 0.6)
 
     nucs = find_most_abundant_nuclides_in_materials(
         materials=[my_mat, my_mat_2],
-        exclude=['Li7']
+        exclude=my_mat
     )
 
-    assert nucs == ['Li6']
+    assert nucs == ['Fe56', 'Be9']
+
+
+def test_openmc_material_shared_isotope():
+
+    my_mat = openmc.Material()
+    my_mat.add_nuclide("Li6", 0.5)
+    my_mat.add_nuclide("Li7", 0.5)
+
+    my_mat_2 = openmc.Material()
+    my_mat_2.add_nuclide("Fe56", 0.6)
+    my_mat_2.add_nuclide("Li7", 0.6)
+
+    nucs = find_most_abundant_nuclides_in_materials(
+        materials=[my_mat, my_mat_2],
+        exclude=my_mat
+    )
+
+    assert nucs == ['Fe56']
