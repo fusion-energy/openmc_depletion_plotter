@@ -1,5 +1,7 @@
 from openmc_depletion_plotter import find_most_abundant_nuclides_in_material
 from openmc_depletion_plotter import find_most_abundant_nuclides_in_materials
+from openmc_depletion_plotter import find_most_active_nuclides_in_material
+from openmc_depletion_plotter import find_most_active_nuclides_in_materials
 from openmc_depletion_plotter import get_nuclide_atom_densities_from_materials
 import openmc
 
@@ -149,3 +151,31 @@ def test_get_nuclide_atom_densities_from_materials():
     # second material
     assert isinstance(nucs['Li6'][1], float)
     assert isinstance(nucs['Fe56'][1], float)
+
+
+def test_find_most_active_nuclides_in_material():
+
+    my_mat = openmc.Material()
+    my_mat.add_nuclide("Li6", 0.5)
+    my_mat.add_nuclide("Li7", 0.5)
+    my_mat.add_nuclide("U236", 0.5)  # unstable
+    my_mat.volume = 1
+
+    assert find_most_active_nuclides_in_material(my_mat) == ['U236']
+
+
+def test_find_most_active_nuclides_in_material():
+
+    my_mat = openmc.Material()
+    my_mat.add_nuclide("Li6", 0.5)
+    my_mat.add_nuclide("Li7", 0.5)
+    my_mat.add_nuclide("U236", 0.5)  # unstable
+    my_mat.volume = 1
+
+    my_mat2 = openmc.Material()
+    my_mat2.add_nuclide("Li6", 0.5)
+    my_mat2.add_nuclide("Li7", 0.5)
+    my_mat2.add_nuclide("U238", 0.5)  # unstable
+    my_mat2.volume = 1
+
+    assert find_most_active_nuclides_in_materials([my_mat, my_mat2]) == ['U236', 'U238']
