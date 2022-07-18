@@ -19,9 +19,9 @@ def find_most_abundant_nuclides_in_material(
     for key, value in material.get_nuclide_atom_densities().items():
         if key not in excluded_isotopes:
             if key not in non_excluded_nucs.keys():
-                non_excluded_nucs[key] = value[1]
+                non_excluded_nucs[key] = value
             else:
-                non_excluded_nucs[key] += value[1]
+                non_excluded_nucs[key] += value
 
     sorted_dict = {
         k: v
@@ -49,9 +49,9 @@ def find_most_abundant_nuclides_in_materials(
         for key, value in material.get_nuclide_atom_densities().items():
             if key not in excluded_isotopes:
                 if key not in non_excluded_nucs.keys():
-                    non_excluded_nucs[key] = value[1]
+                    non_excluded_nucs[key] = value
                 else:
-                    non_excluded_nucs[key] += value[1]
+                    non_excluded_nucs[key] += value
 
     sorted_dict = {
         k: v
@@ -61,3 +61,14 @@ def find_most_abundant_nuclides_in_materials(
     }
 
     return list(sorted_dict.keys())
+
+
+def get_nuclide_atom_densities_from_materials(nuclides, all_materials):
+    all_nuclides_with_atoms = {}
+    for isotope in nuclides:
+        all_quants = []
+        for material in all_materials:
+            quant = material.get_nuclide_atom_densities()[isotope]
+            all_quants.append(quant)
+        all_nuclides_with_atoms[isotope] = all_quants
+    return all_nuclides_with_atoms

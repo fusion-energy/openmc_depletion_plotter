@@ -16,3 +16,4 @@ __all__ = ["__version__"]
 from .core import plot_material, plot_materials
 from .utils import find_most_abundant_nuclides_in_material
 from .utils import find_most_abundant_nuclides_in_materials
+from .utils import get_nuclide_atom_densities_from_materials
