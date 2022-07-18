@@ -63,12 +63,16 @@ def find_most_abundant_nuclides_in_materials(
     return list(sorted_dict.keys())
 
 
-def get_nuclide_atom_densities_from_materials(nuclides, all_materials):
+def get_nuclide_atom_densities_from_materials(nuclides, materials):
     all_nuclides_with_atoms = {}
     for isotope in nuclides:
         all_quants = []
-        for material in all_materials:
-            quant = material.get_nuclide_atom_densities()[isotope]
+        for material in materials:
+            quants = material.get_nuclide_atom_densities()
+            if isotope in quants.keys():
+                quant = quants[isotope]
+            else:
+                quant=0.
             all_quants.append(quant)
         all_nuclides_with_atoms[isotope] = all_quants
     return all_nuclides_with_atoms

@@ -1,4 +1,6 @@
-from openmc_depletion_plotter import find_most_abundant_nuclides_in_material, find_most_abundant_nuclides_in_materials
+from openmc_depletion_plotter import find_most_abundant_nuclides_in_material
+from openmc_depletion_plotter import find_most_abundant_nuclides_in_materials
+from openmc_depletion_plotter import get_nuclide_atom_densities_from_materials
 import openmc
 
 
@@ -121,3 +123,29 @@ def test_openmc_material_shared_isotope():
     )
 
     assert nucs == ['Fe56']
+
+
+def test_get_nuclide_atom_densities_from_materials():
+
+    my_mat = openmc.Material()
+    my_mat.add_nuclide("Li6", 0.5)
+    my_mat.add_nuclide("Li7", 0.5)
+
+    my_mat_2 = openmc.Material()
+    my_mat_2.add_nuclide("Fe56", 0.6)
+    my_mat_2.add_nuclide("Li7", 0.6)
+
+    nucs = get_nuclide_atom_densities_from_materials(
+        nuclides=['Li6', 'Fe56'],
+        materials=[my_mat, my_mat_2]
+    )
+
+    assert list(nucs.keys()) == ['Li6', 'Fe56']
+
+    # first material
+    assert isinstance(nucs['Li6'][0], float)
+    assert isinstance(nucs['Fe56'][0], float)
+
+    # second material
+    assert isinstance(nucs['Li6'][1], float)
+    assert isinstance(nucs['Fe56'][1], float)
