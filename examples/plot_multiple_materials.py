@@ -1,4 +1,4 @@
-from openmc_depletion_plotter import plot_materials
+from openmc_depletion_plotter import plot_material
 import openmc
 
 my_mat = openmc.Material()
@@ -22,7 +22,7 @@ my_mat_2.add_element('Co', 0.5)
 my_mat_2.set_density('g/cm3', 7.7)
 my_mat_2.volume = 1
 
-plot_materials(
-    [my_mat, my_mat_2],
-    filenames=['my_mat_1.png', 'my_mat_2.png']
-)
+for mat, filename in zip([my_mat, my_mat_2], ['my_mat_1.png', 'my_mat_2.png']):
+    plotly_figure=plot_material(mat)
+    plotly_figure.write_image(filename)
+
