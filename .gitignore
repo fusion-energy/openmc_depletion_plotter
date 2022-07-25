@@ -136,3 +136,6 @@ _version.py
 
 # output xml files from openmc
 *.xml
+
+*.html
+*.png
