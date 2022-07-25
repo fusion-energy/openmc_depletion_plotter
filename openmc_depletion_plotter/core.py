@@ -78,9 +78,9 @@ def plot_atoms_vs_time(
 
     figure = go.Figure()
     figure.update_layout(
-        title='Activity of nuclides in material',
+        title='Number of of nuclides in material',
         xaxis={"title": "Time [days]", "type": x_scale},
-        yaxis={"title": "Activity [Bq]", "type": y_scale},
+        yaxis={"title": "Number of atoms", "type": y_scale},
     )
 
     add_scale_buttons(figure, x_scale, y_scale)
