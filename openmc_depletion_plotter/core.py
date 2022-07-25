@@ -11,30 +11,14 @@ from openmc.data import NATURAL_ABUNDANCE
 
 stable_nuclides = list(NATURAL_ABUNDANCE.keys())
 
-
-
-def plot_material(
-    my_mat,
-    show_all=True
-    # isotopes_label_size=None,
-):
-
-    xycl = get_atoms_from_material(my_mat)
-
+def create_base_plot():
     fig = go.Figure()
-    y_vals, x_vals, c_vals, l_vals = zip(*xycl)
-    fig.add_trace(
-        go.Scatter(
-            x=x_vals,
-            y=y_vals,
-            mode='markers',
-            name='material',
-        )
-    )
+    fig.update_yaxes(title='protons')
+    fig.update_xaxes(title='neutrons')
+    return fig
 
-    #print(stable_nuclides)
-    #print(l_vals)
 
+def add_stables(fig):
 
     for stable in stable_nuclides:
         atomic_number, mass_number, _ = openmc.data.zam(stable)
@@ -50,6 +34,39 @@ def plot_material(
             fillcolor='lightgrey',
             line_color="lightgrey",
         )
+    return fig
+
+def plot_material_activity(
+    my_mat,
+):
+    xycl = get_atoms_from_material(my_mat)
+
+    y_vals, x_vals, c_vals, l_vals = zip(*xycl)
+
+
+def plot_material(
+    my_mat,
+    show_all=True
+    # neutron_proton_axis=True
+    # isotopes_label_size=None,
+):
+
+    xycl = get_atoms_from_material(my_mat)
+
+    y_vals, x_vals, c_vals, l_vals = zip(*xycl)
+
+    # add scatter points for all the isotopes
+    # fig.add_trace(
+    #     go.Scatter(
+    #         x=x_vals,
+    #         y=y_vals,
+    #         mode='markers',
+    #         name='material',
+    #     )
+    # )
+
+    fig = create_base_plot()
+    fig = add_stables(fig)
 
     for entry in xycl:
         y, x, c, l = entry
@@ -57,7 +74,6 @@ def plot_material(
         color = cm.viridis(c/max(c_vals))[:3]
         scaled_color = (color[0]*255,color[1]*255,color[2]*255)
         text_color = f'rgb{scaled_color}'
-        #print(color, text_color)
 
         if l in stable_nuclides:
             line_color = "lightgrey"
@@ -65,7 +81,6 @@ def plot_material(
         else:
             line_color = "Black"
             line_width = 1
-
 
         fig.add_shape(
             x0=x-0.5,
@@ -101,8 +116,6 @@ def plot_material(
         width = max(x_vals)+1
         ratio = height / width
 
-    fig.update_xaxes(title='protons')
-    fig.update_yaxes(title='neutrons')
     fig.update_layout(
         # autosize=True
         width=1000,
