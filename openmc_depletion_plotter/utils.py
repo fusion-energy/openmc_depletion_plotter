@@ -16,6 +16,47 @@ stable_nuclides = list(NATURAL_ABUNDANCE.keys())
 
 ureg = pint.UnitRegistry()
 
+def add_scale_buttons(figure, x_scale, y_scale):
+    if x_scale == "log":
+        not_x_scale = "lin"
+    else:
+        not_x_scale = "log"
+
+    if y_scale == "log":
+        not_y_scale = "lin"
+    else:
+        not_y_scale = "log"
+    buttons_list = []
+    for xscale in [x_scale, not_x_scale]:
+        for yscale in [y_scale, not_y_scale]:
+            buttons_list.append(
+                {
+                    "args": [
+                        {
+                            "xaxis.type": xscale,
+                            "yaxis.type": yscale,
+                        }
+                    ],
+                    "label": f"{xscale}(x) , {yscale}(y)",
+                    "method": "relayout",
+                }
+            )
+
+    # this adds the dropdown box for log and lin axis selection
+    figure.update_layout(
+        updatemenus=[
+            go.layout.Updatemenu(
+                buttons=buttons_list,
+                pad={"r": 10, "t": 10},
+                showactive=True,
+                x=0.5,
+                xanchor="left",
+                y=1.1,
+                yanchor="top",
+            ),
+        ]
+    )
+    return figure
 
 def create_base_plot(title=''):
     fig = go.Figure()

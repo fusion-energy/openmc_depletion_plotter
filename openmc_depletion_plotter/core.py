@@ -6,20 +6,99 @@ import matplotlib.cm as cm
 import plotly.graph_objects as go
 
 import matplotlib.cm as cm
-from .utils import get_atoms_from_material, get_atoms_activity_from_material
+from .utils import get_atoms_from_material
+from .utils import get_atoms_activity_from_material
 from .utils import create_base_plot
 from .utils import add_stables
 from .utils import update_axis_range_partial_chart
 from .utils import update_axis_range_full_chart
 from .utils import stable_nuclides
+from .utils import find_most_abundant_nuclides_in_materials
+from .utils import find_most_active_nuclides_in_materials
+from .utils import get_nuclide_atom_densities_from_materials
+from .utils import add_scale_buttons
 
 # from openmc.data import NATURAL_ABUNDANCE
 
 # stable_nuclides = list(NATURAL_ABUNDANCE.keys())
 
+def plot_activity_vs_time(
+    materials,
+    excluded_material,
+    time_steps,
+    show_top=10,
+    x_scale ='log',
+    y_scale='log',
+    ):
+
+    most_active = find_most_active_nuclides_in_materials(
+        materials=materials,
+        exclude=excluded_material
+    )
+
+    all_nuclides_with_atoms = get_nuclide_atom_densities_from_materials(most_active[:show_top], materials)
+
+    figure = go.Figure()
+    figure.update_layout(
+        title='Activity of nuclides in material',
+        xaxis={"title": "Time [days]", "type": x_scale},
+        yaxis={"title": "Activity [Bq]", "type": y_scale},
+    )
+
+    add_scale_buttons(figure, x_scale, y_scale)
+
+    for key, value in all_nuclides_with_atoms.items():
+        figure.add_trace(
+            go.Scatter(
+                mode="lines",
+                x=time_steps,
+                y=value,
+                name=key,
+                # line=dict(shape="hv", width=0),
+            )
+        )
+    
+    return figure
 
 
-def plot_material_activity(
+def plot_atoms_vs_time(
+    materials,
+    excluded_material,
+    time_steps,
+    show_top=10,
+    x_scale ='log',
+    y_scale='log',
+):
+    most_abundant = find_most_abundant_nuclides_in_materials(
+        materials=materials,
+        exclude=excluded_material
+    )
+
+    all_nuclides_with_atoms = get_nuclide_atom_densities_from_materials(most_abundant[:show_top], materials)
+
+    figure = go.Figure()
+    figure.update_layout(
+        title='Activity of nuclides in material',
+        xaxis={"title": "Time [days]", "type": x_scale},
+        yaxis={"title": "Activity [Bq]", "type": y_scale},
+    )
+
+    add_scale_buttons(figure, x_scale, y_scale)
+
+    for key, value in all_nuclides_with_atoms.items():
+        figure.add_trace(
+            go.Scatter(
+                mode="lines",
+                x=time_steps,
+                y=value,
+                name=key,
+                # line=dict(shape="hv", width=0),
+            )
+        )
+    
+    return figure
+
+def plot_isotope_chart_of_activity(
     my_mat,
     show_all=True
 ):
@@ -74,7 +153,7 @@ def plot_material_activity(
     return fig
 
 
-def plot_material(
+def plot_isotope_chart_of_atoms(
     my_mat,
     show_all=True
     # neutron_proton_axis=True
