@@ -26,7 +26,7 @@ def plot_activity_vs_time(
     materials,
     excluded_material,
     time_steps,
-    show_top=10,
+    show_top=None,
     x_scale ='log',
     y_scale='log',
     ):
@@ -36,7 +36,15 @@ def plot_activity_vs_time(
         exclude=excluded_material
     )
 
-    all_nuclides_with_atoms = get_nuclide_atom_densities_from_materials(most_active[:show_top], materials)
+    if show_top is not None:
+        nuclides=most_active[:show_top]
+    else:
+        nuclides=most_active
+
+    all_nuclides_with_atoms = get_nuclide_atom_densities_from_materials(
+        nuclides=nuclides,
+        materials=materials
+    )
 
     figure = go.Figure()
     figure.update_layout(
@@ -65,16 +73,25 @@ def plot_atoms_vs_time(
     materials,
     excluded_material,
     time_steps,
-    show_top=10,
+    show_top=None,
     x_scale ='log',
     y_scale='log',
 ):
+
     most_abundant = find_most_abundant_nuclides_in_materials(
         materials=materials,
         exclude=excluded_material
     )
+    if show_top is not None:
+        nuclides=most_abundant[:show_top]
+    else:
+        nuclides=most_abundant
 
-    all_nuclides_with_atoms = get_nuclide_atom_densities_from_materials(most_abundant[:show_top], materials)
+    all_nuclides_with_atoms = get_nuclide_atom_densities_from_materials(
+        nuclides=nuclides,
+        materials=materials
+    )
+
 
     figure = go.Figure()
     figure.update_layout(
