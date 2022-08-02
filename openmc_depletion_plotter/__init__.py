@@ -13,7 +13,11 @@ except PackageNotFoundError:
 
 __all__ = ["__version__"]
 
-from .core import plot_material
+from .core import plot_isotope_chart_of_atoms
+from .core import plot_isotope_chart_of_activity
+from .core import plot_activity_vs_time
+from .core import plot_atoms_vs_time
+from .utils import get_atoms_activity_from_material
 from .utils import find_most_abundant_nuclides_in_material
 from .utils import find_most_abundant_nuclides_in_materials
 from .utils import get_nuclide_atom_densities_from_materials
@@ -21,3 +25,8 @@ from .utils import find_most_active_nuclides_in_material
 from .utils import find_most_active_nuclides_in_materials
 from .utils import get_nuclide_activities_from_materials
 from .utils import get_atoms_from_material
+from .utils import create_base_plot
+from .utils import add_stables
+from .utils import update_axis_range_partial_chart
+from .utils import update_axis_range_full_chart
+from .utils import add_scale_buttons
