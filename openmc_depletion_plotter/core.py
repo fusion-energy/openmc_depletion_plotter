@@ -16,6 +16,8 @@ from .utils import stable_nuclides
 from .utils import find_most_abundant_nuclides_in_materials
 from .utils import find_most_active_nuclides_in_materials
 from .utils import get_nuclide_atom_densities_from_materials
+from .utils import get_nuclide_activities_from_materials
+from .utils import get_nuclide_specific_activities_from_materials
 from .utils import add_scale_buttons
 
 # from openmc.data import NATURAL_ABUNDANCE
@@ -41,7 +43,7 @@ def plot_activity_vs_time(
     else:
         nuclides=most_active
 
-    all_nuclides_with_atoms = get_nuclide_atom_densities_from_materials(
+    all_nuclides_with_atoms = get_nuclide_activities_from_materials(
         nuclides=nuclides,
         materials=materials
     )
@@ -63,6 +65,65 @@ def plot_activity_vs_time(
                 y=value,
                 name=key,
                 # line=dict(shape="hv", width=0),
+            )
+        )
+    
+    return figure
+
+def plot_specific_activity_vs_time(
+    materials,
+    excluded_material,
+    time_steps,
+    show_top=None,
+    x_scale ='log',
+    y_scale='log',
+    horizontal_lines = []
+    ):
+
+    most_active = find_most_active_nuclides_in_materials(
+        materials=materials,
+        exclude=excluded_material,
+        specific_activity=True
+    )
+
+    if show_top is not None:
+        nuclides=most_active[:show_top]
+    else:
+        nuclides=most_active
+
+    all_nuclides_with_atoms = get_nuclide_specific_activities_from_materials(
+        nuclides=nuclides,
+        materials=materials
+    )
+
+    figure = go.Figure()
+    figure.update_layout(
+        title='Specific activity of nuclides in material',
+        xaxis={"title": "Time [days]", "type": x_scale},
+        yaxis={"title": "Activity [Bq/g]", "type": y_scale},
+    )
+
+    add_scale_buttons(figure, x_scale, y_scale)
+
+    for key, value in all_nuclides_with_atoms.items():
+        figure.add_trace(
+            go.Scatter(
+                mode="lines",
+                x=time_steps,
+                y=value,
+                name=key,
+                # line=dict(shape="hv", width=0),
+            )
+        )
+
+    for name, value in horizontal_lines:
+        figure.add_trace(
+            go.Scatter(
+                mode="lines",
+                x=[time_steps[0], time_steps[-1]],
+                y=[value, value],
+                name=name,
+                line=dict(dash='dot', color='black'),
             )
         )
     
