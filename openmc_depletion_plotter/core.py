@@ -15,6 +15,7 @@ from .utils import update_axis_range_full_chart
 from .utils import stable_nuclides
 from .utils import find_most_abundant_nuclides_in_materials
 from .utils import find_most_active_nuclides_in_materials
+from .utils import find_total_nuclides_in_materials
 from .utils import get_nuclide_atom_densities_from_materials
 from .utils import get_nuclide_activities_from_materials
 from .utils import get_nuclide_specific_activities_from_materials
@@ -137,6 +138,7 @@ def plot_atoms_vs_time(
     show_top=None,
     x_scale ='log',
     y_scale='log',
+    include_total = True
 ):
 
     most_abundant = find_most_abundant_nuclides_in_materials(
@@ -152,7 +154,6 @@ def plot_atoms_vs_time(
         nuclides=nuclides,
         materials=materials
     )
-
 
     figure = go.Figure()
     figure.update_layout(
@@ -173,7 +174,17 @@ def plot_atoms_vs_time(
                 # line=dict(shape="hv", width=0),
             )
         )
-    
+
+    if include_total:
+        figure.add_trace(
+            go.Scatter(
+                mode="lines",
+                x=time_steps,
+                y=find_total_nuclides_in_materials(materials, exclude=excluded_material),
+                name='total',
+            )
+        )
+
     return figure
 
 def plot_isotope_chart_of_activity(
