@@ -120,7 +120,7 @@ def find_most_active_nuclides_in_material(
             excluded_isotopes = exclude.get_nuclides()
 
     non_excluded_nucs = {}
-    for key, value in material.get_nuclide_activity().items():
+    for key, value in material.get_activity(by_nuclide=True, units='Bq').items():
         if key not in excluded_isotopes:
             if key not in non_excluded_nucs.keys():
                 if value != 0.:
@@ -136,9 +136,11 @@ def find_most_active_nuclides_in_material(
     }
     return list(sorted_dict.keys())
 
+
 def find_most_active_nuclides_in_materials(
     materials,
     exclude=None,
+    specific_activity=False
 ):
     non_excluded_nucs = {}
     if exclude is None:
@@ -150,7 +152,13 @@ def find_most_active_nuclides_in_materials(
             excluded_isotopes = exclude.get_nuclides()
 
     for material in materials:
-        for key, value in material.get_nuclide_activity().items():
+        
+        if specific_activity is False:
+            activities = material.get_activity(by_nuclide=True, units='Bq').items()
+        if specific_activity is True:
+            activities = material.get_activity(by_nuclide=True, units='Bq/g').items()
+        
+        for key, value in activities:
             if key not in excluded_isotopes:
                 if key not in non_excluded_nucs.keys():
                     if value != 0.:
@@ -234,7 +242,7 @@ def get_nuclide_atom_densities_from_materials(nuclides, materials):
     for isotope in nuclides:
         all_quants = []
         for material in materials:
-            quants = material.get_nuclide_atom_densities()
+            quants = material.get_nuclide_atom_densities()  # units are atom/b-cm
             if isotope in quants.keys():
                 quant = quants[isotope]
             else:
@@ -249,7 +257,21 @@ def get_nuclide_activities_from_materials(nuclides, materials):
     for isotope in nuclides:
         all_quants = []
         for material in materials:
-            quants = material.get_nuclide_activity()
+            quants = material.get_activity(by_nuclide=True, units='Bq')  # units in Bq
+            if isotope in quants.keys():
+                quant = quants[isotope]
+            else:
+                quant=0.
+            all_quants.append(quant)
+        all_nuclides_with_atoms[isotope] = all_quants
+    return all_nuclides_with_atoms
+
+def get_nuclide_specific_activities_from_materials(nuclides, materials):
+    all_nuclides_with_atoms = {}
+    for isotope in nuclides:
+        all_quants = []
+        for material in materials:
+            quants = material.get_activity(by_nuclide=True, units='Bq/g')  # units in Bq
             if isotope in quants.keys():
                 quant = quants[isotope]
             else:
