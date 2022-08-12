@@ -138,7 +138,7 @@ def plot_atoms_vs_time(
     show_top=None,
     x_scale ='log',
     y_scale='log',
-    include_total = True
+    include_total = False
 ):
 
     most_abundant = find_most_abundant_nuclides_in_materials(
