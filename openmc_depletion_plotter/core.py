@@ -15,7 +15,11 @@ from .utils import update_axis_range_full_chart
 from .utils import stable_nuclides
 from .utils import find_most_abundant_nuclides_in_materials
 from .utils import find_most_active_nuclides_in_materials
+from .utils import find_total_nuclides_in_materials
+from .utils import find_total_activity_in_materials
 from .utils import get_nuclide_atom_densities_from_materials
+from .utils import get_nuclide_activities_from_materials
+from .utils import get_nuclide_specific_activities_from_materials
 from .utils import add_scale_buttons
 
 # from openmc.data import NATURAL_ABUNDANCE
@@ -29,6 +33,7 @@ def plot_activity_vs_time(
     show_top=None,
     x_scale ='log',
     y_scale='log',
+    title='Activity of nuclides in material'
     ):
 
     most_active = find_most_active_nuclides_in_materials(
@@ -41,14 +46,14 @@ def plot_activity_vs_time(
     else:
         nuclides=most_active
 
-    all_nuclides_with_atoms = get_nuclide_atom_densities_from_materials(
+    all_nuclides_with_atoms = get_nuclide_activities_from_materials(
         nuclides=nuclides,
         materials=materials
     )
 
     figure = go.Figure()
     figure.update_layout(
-        title='Activity of nuclides in material',
+        title=title,
         xaxis={"title": "Time [days]", "type": x_scale},
         yaxis={"title": "Activity [Bq]", "type": y_scale},
     )
@@ -68,6 +73,78 @@ def plot_activity_vs_time(
     
     return figure
 
+def plot_specific_activity_vs_time(
+    materials,
+    excluded_material,
+    time_steps,
+    show_top=None,
+    x_scale ='log',
+    y_scale='log',
+    horizontal_lines = [],
+    include_total=True,
+    title='Specific activity of nuclides in material'
+    ):
+
+    most_active = find_most_active_nuclides_in_materials(
+        materials=materials,
+        exclude=excluded_material,
+        specific_activity=True
+    )
+
+    if show_top is not None:
+        nuclides=most_active[:show_top]
+    else:
+        nuclides=most_active
+
+    all_nuclides_with_atoms = get_nuclide_specific_activities_from_materials(
+        nuclides=nuclides,
+        materials=materials
+    )
+
+    figure = go.Figure()
+    figure.update_layout(
+        title=title,
+        xaxis={"title": "Time [days]", "type": x_scale},
+        yaxis={"title": "Activity [Bq/g]", "type": y_scale},
+    )
+
+    add_scale_buttons(figure, x_scale, y_scale)
+
+    for key, value in all_nuclides_with_atoms.items():
+        figure.add_trace(
+            go.Scatter(
+                mode="lines",
+                x=time_steps,
+                y=value,
+                name=key,
+                # line=dict(shape="hv", width=0),
+            )
+        )
+    if include_total:
+        figure.add_trace(
+            go.Scatter(
+                mode="lines",
+                x=time_steps,
+                y=find_total_activity_in_materials(materials, specific_activity=True, exclude=excluded_material),
+                name='total',
+                line=dict(dash='longdashdot', color='black'),
+            )
+        )
+        
+
+    for name, value in horizontal_lines:
+        figure.add_trace(
+            go.Scatter(
+                mode="lines",
+                x=[time_steps[0], time_steps[-1]],
+                y=[value, value],
+                name=name,
+                line=dict(dash='dot', color='black'),
+            )
+        )
+    
+    return figure
+
 
 def plot_atoms_vs_time(
     materials,
@@ -76,6 +153,8 @@ def plot_atoms_vs_time(
     show_top=None,
     x_scale ='log',
     y_scale='log',
+    include_total = False,
+    title = 'Number of of nuclides in material'
 ):
 
     most_abundant = find_most_abundant_nuclides_in_materials(
@@ -92,10 +171,9 @@ def plot_atoms_vs_time(
         materials=materials
     )
 
-
     figure = go.Figure()
     figure.update_layout(
-        title='Number of of nuclides in material',
+        title=title,
         xaxis={"title": "Time [days]", "type": x_scale},
         yaxis={"title": "Number of atoms", "type": y_scale},
     )
@@ -112,18 +190,31 @@ def plot_atoms_vs_time(
                 # line=dict(shape="hv", width=0),
             )
         )
-    
+
+    if include_total:
+        figure.add_trace(
+            go.Scatter(
+                mode="lines",
+                x=time_steps,
+                y=find_total_nuclides_in_materials(materials, exclude=excluded_material),
+                name='total',
+                line=dict(dash='longdashdot', color='black'),
+            )
+        )
+
     return figure
+
 
 def plot_isotope_chart_of_activity(
     my_mat,
-    show_all=True
+    show_all=True,
+    title='Activity of atoms'
 ):
     xycl = get_atoms_activity_from_material(my_mat)
 
     y_vals, x_vals, c_vals, l_vals = zip(*xycl)
 
-    fig = create_base_plot(title='Activity of nuclides')
+    fig = create_base_plot(title=title)
     fig = add_stables(fig)
 
     for entry in xycl:
@@ -172,7 +263,8 @@ def plot_isotope_chart_of_activity(
 
 def plot_isotope_chart_of_atoms(
     my_mat,
-    show_all=True
+    show_all=True,
+    title='Numbers of atoms'
     # neutron_proton_axis=True
     # isotopes_label_size=None,
 ):
@@ -191,7 +283,7 @@ def plot_isotope_chart_of_atoms(
     #     )
     # )
 
-    fig = create_base_plot(title='Numbers of nuclides')
+    fig = create_base_plot(title=title)
     fig = add_stables(fig)
 
     for entry in xycl:
