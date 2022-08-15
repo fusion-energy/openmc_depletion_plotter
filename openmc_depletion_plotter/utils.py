@@ -175,6 +175,36 @@ def find_most_active_nuclides_in_materials(
 
     return list(sorted_dict.keys())
 
+def find_total_activity_in_materials(
+    materials,
+    exclude=None,
+    specific_activity=False
+):
+    non_excluded_nucs = []
+    if exclude is None:
+        excluded_isotopes = []
+    else:
+        if isinstance(exclude, Iterable):
+            excluded_isotopes = exclude
+        elif isinstance(exclude, openmc.Material):
+            excluded_isotopes = exclude.get_nuclides()
+
+    materials_activities = []
+    for material in materials:
+        material_activity = 0
+        if specific_activity is False:
+            activities = material.get_activity(by_nuclide=True, units='Bq')
+        if specific_activity is True:
+            activities = material.get_activity(by_nuclide=True, units='Bq/g')
+
+        for key, value in activities.items():
+            if key not in excluded_isotopes:
+                material_activity += value
+
+        materials_activities.append(material_activity)
+
+    return materials_activities
+
 
 def find_most_abundant_nuclides_in_material(
     material,
@@ -204,6 +234,27 @@ def find_most_abundant_nuclides_in_material(
         )
     }
     return list(sorted_dict.keys())
+
+def find_total_nuclides_in_materials(materials, exclude=None,):
+
+    if exclude is None:
+        excluded_isotopes = []
+    else:
+        if isinstance(exclude, Iterable):
+            excluded_isotopes = exclude
+        elif isinstance(exclude, openmc.Material):
+            excluded_isotopes = exclude.get_nuclides()
+
+    materials_atom_densities = []
+
+    for material in materials:
+        material_atom_densities = 0
+        for key, value in material.get_nuclide_atom_densities().items():
+            if key not in excluded_isotopes:
+                material_atom_densities += value
+        materials_atom_densities.append(material_atom_densities)
+
+    return materials_atom_densities
 
 
 def find_most_abundant_nuclides_in_materials(
