@@ -4,6 +4,7 @@ import openmc
 import matplotlib.cm as cm
 
 import plotly.graph_objects as go
+import numpy as np
 
 import matplotlib.cm as cm
 from .utils import get_atoms_from_material
@@ -61,6 +62,7 @@ def plot_activity_vs_time(
     add_scale_buttons(figure, x_scale, y_scale)
 
     for key, value in all_nuclides_with_atoms.items():
+        value = np.array(value)
         figure.add_trace(
             go.Scatter(
                 mode="lines",
@@ -82,7 +84,8 @@ def plot_specific_activity_vs_time(
     y_scale='log',
     horizontal_lines = [],
     include_total=True,
-    title='Specific activity of nuclides in material'
+    title='Specific activity of nuclides in material',
+    threshold=None
     ):
 
     most_active = find_most_active_nuclides_in_materials(
@@ -111,6 +114,9 @@ def plot_specific_activity_vs_time(
     add_scale_buttons(figure, x_scale, y_scale)
 
     for key, value in all_nuclides_with_atoms.items():
+        if threshold:
+            value = np.array(value)
+            value[value<threshold]=threshold
         figure.add_trace(
             go.Scatter(
                 mode="lines",
@@ -181,6 +187,7 @@ def plot_atoms_vs_time(
     add_scale_buttons(figure, x_scale, y_scale)
 
     for key, value in all_nuclides_with_atoms.items():
+        value = np.array(value)
         figure.add_trace(
             go.Scatter(
                 mode="lines",
