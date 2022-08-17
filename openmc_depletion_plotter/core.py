@@ -163,6 +163,7 @@ def plot_atoms_vs_time(
     y_scale='log',
     include_total = False,
     x_axis_title='Time [days]',
+    threshold=None,
     title = 'Number of of nuclides in material'
 ):
 
@@ -190,7 +191,9 @@ def plot_atoms_vs_time(
     add_scale_buttons(figure, x_scale, y_scale)
 
     for key, value in all_nuclides_with_atoms.items():
-        value = np.array(value)
+        if threshold:
+            value = np.array(value)
+            value[value<threshold]=threshold
         figure.add_trace(
             go.Scatter(
                 mode="lines",
@@ -217,13 +220,14 @@ def plot_atoms_vs_time(
 
 def plot_isotope_chart_of_activity(
     my_mat,
-    show_all=True
+    show_all=True,
+    title='Activity of nuclides'
 ):
     xycl = get_atoms_activity_from_material(my_mat)
 
     y_vals, x_vals, c_vals, l_vals = zip(*xycl)
 
-    fig = create_base_plot(title='Activity of nuclides')
+    fig = create_base_plot(title=title)
     fig = add_stables(fig)
 
     for entry in xycl:
@@ -272,7 +276,8 @@ def plot_isotope_chart_of_activity(
 
 def plot_isotope_chart_of_atoms(
     my_mat,
-    show_all=True
+    show_all=True,
+    title='Numbers of nuclides'
     # neutron_proton_axis=True
     # isotopes_label_size=None,
 ):
@@ -291,7 +296,7 @@ def plot_isotope_chart_of_atoms(
     #     )
     # )
 
-    fig = create_base_plot(title='Numbers of nuclides')
+    fig = create_base_plot(title=title)
     fig = add_stables(fig)
 
     for entry in xycl:

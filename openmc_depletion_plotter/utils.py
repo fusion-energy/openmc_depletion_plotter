@@ -371,7 +371,7 @@ def get_atoms_activity_from_material(material):
         msg = "material.volume must be set to find the activity."
         raise ValueError(msg)
 
-    isotopes_and_activity = material.get_nuclide_activity()
+    isotopes_and_activity = material.get_activity(units='Bq', by_nuclide=True)
     isotopes_and_atoms = []
     for key, activity in isotopes_and_activity.items():
 
