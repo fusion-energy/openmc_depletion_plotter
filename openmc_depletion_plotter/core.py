@@ -34,7 +34,8 @@ def plot_activity_vs_time(
     show_top=None,
     x_scale ='log',
     y_scale='log',
-    title='Activity of nuclides in material'
+    title='Activity of nuclides in material',
+    x_axis_title="Time [days]"
     ):
 
     most_active = find_most_active_nuclides_in_materials(
@@ -55,7 +56,7 @@ def plot_activity_vs_time(
     figure = go.Figure()
     figure.update_layout(
         title=title,
-        xaxis={"title": "Time [days]", "type": x_scale},
+        xaxis={"title": x_axis_title, "type": x_scale},
         yaxis={"title": "Activity [Bq]", "type": y_scale},
     )
 
@@ -85,6 +86,7 @@ def plot_specific_activity_vs_time(
     horizontal_lines = [],
     include_total=True,
     title='Specific activity of nuclides in material',
+    x_axis_title='Time [days]',
     threshold=None
     ):
 
@@ -107,7 +109,7 @@ def plot_specific_activity_vs_time(
     figure = go.Figure()
     figure.update_layout(
         title=title,
-        xaxis={"title": "Time [days]", "type": x_scale},
+        xaxis={"title": x_axis_title, "type": x_scale},
         yaxis={"title": "Activity [Bq/g]", "type": y_scale},
     )
 
@@ -160,6 +162,7 @@ def plot_atoms_vs_time(
     x_scale ='log',
     y_scale='log',
     include_total = False,
+    x_axis_title='Time [days]',
     title = 'Number of of nuclides in material'
 ):
 
@@ -180,7 +183,7 @@ def plot_atoms_vs_time(
     figure = go.Figure()
     figure.update_layout(
         title=title,
-        xaxis={"title": "Time [days]", "type": x_scale},
+        xaxis={"title": x_axis_title, "type": x_scale},
         yaxis={"title": "Number of atoms", "type": y_scale},
     )
 
