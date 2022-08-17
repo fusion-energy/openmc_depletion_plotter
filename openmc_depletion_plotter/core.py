@@ -113,12 +113,16 @@ def plot_specific_activity_vs_time(
         yaxis={"title": "Activity [Bq/g]", "type": y_scale},
     )
 
+    if threshold:
+        total = find_total_activity_in_materials(materials, specific_activity=True, exclude=excluded_material),
+        figure.update_layout(yaxis_range=[threshold,max(total)])
+
     add_scale_buttons(figure, x_scale, y_scale)
 
     for key, value in all_nuclides_with_atoms.items():
         if threshold:
             value = np.array(value)
-            value[value<threshold]=threshold
+            value[value<threshold]==threshold
         figure.add_trace(
             go.Scatter(
                 mode="lines",
@@ -187,13 +191,16 @@ def plot_atoms_vs_time(
         xaxis={"title": x_axis_title, "type": x_scale},
         yaxis={"title": "Number of atoms", "type": y_scale},
     )
+    if threshold:
+        total = find_total_activity_in_materials(materials, specific_activity=True, exclude=excluded_material),
+        figure.update_layout(yaxis_range=[threshold,max(total)])
 
     add_scale_buttons(figure, x_scale, y_scale)
 
     for key, value in all_nuclides_with_atoms.items():
         if threshold:
             value = np.array(value)
-            value[value<threshold]=threshold
+            value[value<threshold]=np.nan
         figure.add_trace(
             go.Scatter(
                 mode="lines",
