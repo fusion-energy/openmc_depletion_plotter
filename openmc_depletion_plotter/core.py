@@ -34,7 +34,8 @@ def plot_activity_vs_time(
     show_top=None,
     x_scale ='log',
     y_scale='log',
-    title='Activity of nuclides in material'
+    title='Activity of nuclides in material',
+    x_axis_title="Time [days]"
     ):
 
     most_active = find_most_active_nuclides_in_materials(
@@ -55,7 +56,7 @@ def plot_activity_vs_time(
     figure = go.Figure()
     figure.update_layout(
         title=title,
-        xaxis={"title": "Time [days]", "type": x_scale},
+        xaxis={"title": x_axis_title, "type": x_scale},
         yaxis={"title": "Activity [Bq]", "type": y_scale},
     )
 
@@ -85,6 +86,7 @@ def plot_specific_activity_vs_time(
     horizontal_lines = [],
     include_total=True,
     title='Specific activity of nuclides in material',
+    x_axis_title='Time [days]',
     threshold=None
     ):
 
@@ -107,16 +109,20 @@ def plot_specific_activity_vs_time(
     figure = go.Figure()
     figure.update_layout(
         title=title,
-        xaxis={"title": "Time [days]", "type": x_scale},
+        xaxis={"title": x_axis_title, "type": x_scale},
         yaxis={"title": "Activity [Bq/g]", "type": y_scale},
     )
+
+    if threshold:
+        total = find_total_activity_in_materials(materials, specific_activity=True, exclude=excluded_material),
+        figure.update_layout(yaxis_range=[threshold,max(total)])
 
     add_scale_buttons(figure, x_scale, y_scale)
 
     for key, value in all_nuclides_with_atoms.items():
         if threshold:
             value = np.array(value)
-            value[value<threshold]=threshold
+            value[value<threshold]==threshold
         figure.add_trace(
             go.Scatter(
                 mode="lines",
@@ -160,6 +166,8 @@ def plot_atoms_vs_time(
     x_scale ='log',
     y_scale='log',
     include_total = False,
+    x_axis_title='Time [days]',
+    threshold=None,
     title = 'Number of of nuclides in material'
 ):
 
@@ -180,14 +188,19 @@ def plot_atoms_vs_time(
     figure = go.Figure()
     figure.update_layout(
         title=title,
-        xaxis={"title": "Time [days]", "type": x_scale},
+        xaxis={"title": x_axis_title, "type": x_scale},
         yaxis={"title": "Number of atoms", "type": y_scale},
     )
+    if threshold:
+        total = find_total_activity_in_materials(materials, specific_activity=True, exclude=excluded_material),
+        figure.update_layout(yaxis_range=[threshold,max(total)])
 
     add_scale_buttons(figure, x_scale, y_scale)
 
     for key, value in all_nuclides_with_atoms.items():
-        value = np.array(value)
+        if threshold:
+            value = np.array(value)
+            value[value<threshold]=np.nan
         figure.add_trace(
             go.Scatter(
                 mode="lines",
@@ -215,7 +228,7 @@ def plot_atoms_vs_time(
 def plot_isotope_chart_of_activity(
     my_mat,
     show_all=True,
-    title='Activity of atoms'
+    title='Activity of nuclides'
 ):
     xycl = get_atoms_activity_from_material(my_mat)
 
@@ -271,7 +284,7 @@ def plot_isotope_chart_of_activity(
 def plot_isotope_chart_of_atoms(
     my_mat,
     show_all=True,
-    title='Numbers of atoms'
+    title='Numbers of nuclides'
     # neutron_proton_axis=True
     # isotopes_label_size=None,
 ):
