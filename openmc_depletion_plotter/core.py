@@ -5,7 +5,7 @@ import matplotlib.cm as cm
 
 import plotly.graph_objects as go
 import numpy as np
-
+import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from .utils import get_atoms_from_material
 from .utils import get_atoms_activity_from_material
@@ -87,7 +87,8 @@ def plot_specific_activity_vs_time(
     include_total=True,
     title='Specific activity of nuclides in material',
     x_axis_title='Time [days]',
-    threshold=None
+    threshold=None,
+    method='plotly'
     ):
 
     most_active = find_most_active_nuclides_in_materials(
@@ -106,55 +107,64 @@ def plot_specific_activity_vs_time(
         materials=materials
     )
 
-    figure = go.Figure()
-    figure.update_layout(
-        title=title,
-        xaxis={"title": x_axis_title, "type": x_scale},
-        yaxis={"title": "Activity [Bq/g]", "type": y_scale},
-    )
 
-    if threshold:
-        total = find_total_activity_in_materials(materials, specific_activity=True, exclude=excluded_material),
-        figure.update_layout(yaxis_range=[threshold,max(total)])
+    if method=='plotly':
+        figure = go.Figure()
+        figure.update_layout(
+            title=title,
+            xaxis={"title": x_axis_title, "type": x_scale},
+            yaxis={"title": "Activity [Bq/g]", "type": y_scale},
+        )
 
-    add_scale_buttons(figure, x_scale, y_scale)
+        if threshold:
+            total = find_total_activity_in_materials(materials, specific_activity=True, exclude=excluded_material),
+            figure.update_layout(yaxis_range=[threshold,max(total)])
+        add_scale_buttons(figure, x_scale, y_scale)
+    else:
+        plt.cla
+
+
 
     for key, value in all_nuclides_with_atoms.items():
-        if threshold:
-            value = np.array(value)
-            value[value<threshold]==threshold
-        figure.add_trace(
-            go.Scatter(
-                mode="lines",
-                x=time_steps,
-                y=value,
-                name=key,
-                # line=dict(shape="hv", width=0),
+
+        if method=='plotly':
+            figure.add_trace(
+                go.Scatter(
+                    mode="lines",
+                    x=time_steps,
+                    y=value,
+                    name=key,
+                    # line=dict(shape="hv", width=0),
+                )
             )
-        )
+        else:
+            plt.plot(time_steps, value, name=key)
+
     if include_total:
-        figure.add_trace(
-            go.Scatter(
-                mode="lines",
-                x=time_steps,
-                y=find_total_activity_in_materials(materials, specific_activity=True, exclude=excluded_material),
-                name='total',
-                line=dict(dash='longdashdot', color='black'),
+        if method=='plotly':
+            figure.add_trace(
+                go.Scatter(
+                    mode="lines",
+                    x=time_steps,
+                    y=find_total_activity_in_materials(materials, specific_activity=True, exclude=excluded_material),
+                    name='total',
+                    line=dict(dash='longdashdot', color='black'),
+                )
             )
-        )
         
 
     for name, value in horizontal_lines:
-        figure.add_trace(
-            go.Scatter(
-                mode="lines",
-                x=[time_steps[0], time_steps[-1]],
-                y=[value, value],
-                name=name,
-                line=dict(dash='dot', color='black'),
+        if method=='plotly':
+            figure.add_trace(
+                go.Scatter(
+                    mode="lines",
+                    x=[time_steps[0], time_steps[-1]],
+                    y=[value, value],
+                    name=name,
+                    line=dict(dash='dot', color='black'),
+                )
             )
-        )
-    
+    plt.show()
     return figure
 
 
@@ -201,12 +211,17 @@ def plot_atoms_vs_time(
         if threshold:
             value = np.array(value)
             value[value<threshold]=np.nan
+
+        if key in stable_nuclides:
+            name = key + ' stable'
+        else:
+            name = key
         figure.add_trace(
             go.Scatter(
                 mode="lines",
                 x=time_steps,
                 y=value,
-                name=key,
+                name=name,
                 # line=dict(shape="hv", width=0),
             )
         )
