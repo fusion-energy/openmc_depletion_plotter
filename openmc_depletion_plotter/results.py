@@ -63,7 +63,7 @@ def plot_activity_vs_time(
         if threshold:
             total = (
                 find_total_activity_in_materials(
-                    all_materials, specific_activity=True, exclude=excluded_material
+                    materials=all_materials, units=units, exclude=excluded_material
                 ),
             )
             figure.update_layout(yaxis_range=[threshold, max(total)])
@@ -157,9 +157,10 @@ def plot_atoms_vs_time(
     )
     if threshold:
         total = (
-            find_total_activity_in_materials(
-                all_materials, specific_activity=True, exclude=excluded_material
-            ),
+            # need an equvilent menthod
+            # find_total_activity_in_materials(
+            #     all_materials, units=units, exclude=excluded_material
+            # ),
         )
         figure.update_layout(yaxis_range=[threshold, max(total)])
 
