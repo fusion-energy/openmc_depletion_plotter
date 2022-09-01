@@ -36,3 +36,4 @@ integrator = IntegratorWithPlotting(
 )
 integrator.plot()
 plt.savefig('pulse_single_shot.png')
+plt.show()

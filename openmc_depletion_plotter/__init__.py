@@ -33,3 +33,4 @@ from .utils import update_axis_range_full_chart
 from .utils import add_scale_buttons
 
 from .integrators import IntegratorWithPlotting
+from .materials import Materials

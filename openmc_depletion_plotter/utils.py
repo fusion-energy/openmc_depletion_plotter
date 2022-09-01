@@ -16,6 +16,7 @@ stable_nuclides = list(NATURAL_ABUNDANCE.keys())
 
 ureg = pint.UnitRegistry()
 
+
 def add_scale_buttons(figure, x_scale, y_scale):
     if x_scale == "log":
         not_x_scale = "lin"
@@ -57,6 +58,7 @@ def add_scale_buttons(figure, x_scale, y_scale):
         ]
     )
     return figure
+
 
 def create_base_plot(title=''):
     fig = go.Figure()
@@ -365,6 +367,7 @@ def get_atoms_from_material(material):
     # print(atoms_per_barn_cm2)
     return isotopes_and_atoms
 
+
 def get_atoms_activity_from_material(material):
 
     if material.volume is None:
@@ -388,6 +391,7 @@ def get_atoms_activity_from_material(material):
 
     # print(atoms_per_barn_cm2)
     return isotopes_and_atoms
+
 
 def build_grid_of_nuclides(iterable_of_nuclides):
 
