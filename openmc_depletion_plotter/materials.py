@@ -11,7 +11,7 @@ from .utils import get_atoms_from_material
 stable_nuclides = list(NATURAL_ABUNDANCE.keys())
 
 
-def plot_isotope_atom_chart(self, show_all=True, title="Numbers of nuclides"):
+def plot_isotope_chart_of_atoms(self, show_all=True, title="Numbers of nuclides"):
 
     xycl = get_atoms_from_material(self)
 
@@ -73,7 +73,7 @@ def plot_isotope_atom_chart(self, show_all=True, title="Numbers of nuclides"):
     return fig
 
 
-def plot_isotope_activity_chart(self, show_all=True, title="Activity of nuclides"):
+def plot_isotope_chart_of_activity(self, show_all=True, title="Activity of nuclides"):
     xycl = get_atoms_activity_from_material(self)
 
     y_vals, x_vals, c_vals, l_vals = zip(*xycl)
@@ -124,5 +124,5 @@ def plot_isotope_activity_chart(self, show_all=True, title="Activity of nuclides
     return fig
 
 
-openmc.Material.plot_isotope_atom_chart = plot_isotope_atom_chart
-openmc.Material.plot_isotope_activity_chart = plot_isotope_activity_chart
+openmc.Material.plot_isotope_chart_of_atoms = plot_isotope_chart_of_atoms
+openmc.Material.plot_isotope_chart_of_activity = plot_isotope_chart_of_activity

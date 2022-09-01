@@ -40,7 +40,7 @@ openmc.deplete.Results.plot_activity_vs_time()
 
 # Plotting activation or atoms on an isotope chart
 
-The ```openmc.Material()``` class has been extended to include a ```plot_isotope_activity_chart()``` method and  ```plot_isotope_atom_chart()``` method.
+The ```openmc.Material()``` class has been extended to include a ```plot_isotope_chart_of_activity()``` method and  ```plot_isotope_chart_of_atoms()``` method.
 
 This method plots the material atoms or the material activity on an isotope chart.
 
@@ -49,6 +49,6 @@ I started making isotope plots back in 2010 so nice to finally distribute this :
 Additional methods provided
 
 ```python
-openmc.Material.plot_isotope_atom_chart()
-openmc.Material.plot_isotope_activity_chart()
+openmc.Material.plot_isotope_chart_of_atoms()
+openmc.Material.plot_isotope_chart_of_activity()
 ```

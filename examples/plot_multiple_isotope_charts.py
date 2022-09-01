@@ -22,5 +22,5 @@ my_mat_2.set_density("g/cm3", 7.7)
 my_mat_2.volume = 1
 
 for mat, filename in zip([my_mat, my_mat_2], ["my_mat_1.png", "my_mat_2.png"]):
-    plotly_figure = mat.plot_isotope_atom_chart()
+    plotly_figure = mat.plot_isotope_chart_of_atoms()
     plotly_figure.write_image(filename)

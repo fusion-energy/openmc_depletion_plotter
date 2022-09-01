@@ -15,12 +15,12 @@ my_mat.add_nuclide("Fe62", 0.3)
 my_mat.set_density("g/cm3", 7.7)
 my_mat.volume = 1
 
-plotly_figure = my_mat.plot_isotope_activity_chart(my_mat)
+plotly_figure = my_mat.plot_isotope_chart_of_activity(my_mat)
 plotly_figure.write_html("my_mat_activity_on_isotope_chart.html")
 plotly_figure.write_image("my_mat_activity_on_isotope_chart.png")
 plotly_figure.show()
 
-plotly_figure_2 = my_mat.plot_isotope_atom_chart(my_mat)
+plotly_figure_2 = my_mat.plot_isotope_chart_of_atoms(my_mat)
 plotly_figure_2.write_html("my_mat_atoms_on_isotope_chart.html")
 plotly_figure_2.write_image("my_mat_atoms_on_isotope_chart.png")
 plotly_figure_2.show()
