@@ -2,8 +2,20 @@
 
 import openmc
 import openmc.deplete
-from openmc.deplete.results import _get_time_as
 
+# from openmc.deplete.results import _get_time_as
+# import is causing an error
+# ImportError: cannot import name '_get_time_as' from 'openmc.deplete.results' (/usr/local/lib/python3.9/dist-packages/openmc/deplete/results.py)
+# temporary solution is to include function here
+def _get_time_as(seconds, units):
+    if units == "d":
+        return seconds / (60 * 60 * 24)
+    elif units == "h":
+        return seconds / (60 * 60)
+    elif units == "min":
+        return seconds / 60
+    else:
+        return seconds
 
 def plot_pulse_schedule(self, timestep_units: str = "s"):
     """Plots the source strength as a function of time and the depletion

@@ -22,7 +22,7 @@ def plot_activity_vs_time(
     x_scale="log",
     y_scale="log",
     title="Activity of nuclides in material",
-    x_axis_title="Time [days]",
+    x_axis_title=None, # defaults to time with time units
     horizontal_lines=[],
     plotting_backend="plotly",
     units="Bq/g",
@@ -52,6 +52,8 @@ def plot_activity_vs_time(
         nuclides=nuclides, materials=all_materials, units=units
     )
 
+    if x_axis_title is None:
+        x_axis_title = f'Time [{time_units}]'
     if plotting_backend == "plotly":
         figure = go.Figure()
         figure.update_layout(
@@ -123,7 +125,7 @@ def plot_atoms_vs_time(
     x_scale="log",
     y_scale="log",
     include_total=False,
-    x_axis_title="Time [days]",
+    x_axis_title=None,
     threshold=None,
     title="Number of of nuclides in material",
 ):
@@ -149,6 +151,9 @@ def plot_atoms_vs_time(
         nuclides=nuclides, materials=all_materials
     )
 
+    if x_axis_title is None:
+        x_axis_title = f'Time [{time_units}]'
+
     figure = go.Figure()
     figure.update_layout(
         title=title,
@@ -157,10 +162,9 @@ def plot_atoms_vs_time(
     )
     if threshold:
         total = (
-            # need an equvilent menthod
-            # find_total_activity_in_materials(
-            #     all_materials, units=units, exclude=excluded_material
-            # ),
+            find_total_nuclides_in_materials(
+                all_materials, exclude=excluded_material
+            ),
         )
         figure.update_layout(yaxis_range=[threshold, max(total)])
 
