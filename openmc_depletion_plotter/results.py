@@ -22,7 +22,7 @@ def plot_activity_vs_time(
     x_scale="log",
     y_scale="log",
     title="Activity of nuclides in material",
-    x_axis_title="Time [days]",
+    x_axis_title=None, # defaults to time with time units
     horizontal_lines=[],
     plotting_backend="plotly",
     units="Bq/g",
@@ -52,6 +52,8 @@ def plot_activity_vs_time(
         nuclides=nuclides, materials=all_materials, units=units
     )
 
+    if x_axis_title is None:
+        x_axis_title = f'Time [{time_units}]'
     if plotting_backend == "plotly":
         figure = go.Figure()
         figure.update_layout(
@@ -123,7 +125,7 @@ def plot_atoms_vs_time(
     x_scale="log",
     y_scale="log",
     include_total=False,
-    x_axis_title="Time [days]",
+    x_axis_title=None,
     threshold=None,
     title="Number of of nuclides in material",
 ):
@@ -148,6 +150,9 @@ def plot_atoms_vs_time(
     all_nuclides_with_atoms = get_nuclide_atom_densities_from_materials(
         nuclides=nuclides, materials=all_materials
     )
+
+    if x_axis_title is None:
+        x_axis_title = f'Time [{time_units}]'
 
     figure = go.Figure()
     figure.update_layout(
