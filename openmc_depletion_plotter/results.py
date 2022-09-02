@@ -162,10 +162,9 @@ def plot_atoms_vs_time(
     )
     if threshold:
         total = (
-            # need an equvilent menthod
-            # find_total_activity_in_materials(
-            #     all_materials, units=units, exclude=excluded_material
-            # ),
+            find_total_nuclides_in_materials(
+                all_materials, exclude=excluded_material
+            ),
         )
         figure.update_layout(yaxis_range=[threshold, max(total)])
 
