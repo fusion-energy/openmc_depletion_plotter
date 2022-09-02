@@ -33,7 +33,8 @@ These methods plot atoms or activity as a function of time.
 These plots optionally include a breakdown of the dominant nuclides.
 
 Additional methods provided
-```
+
+```python
 openmc.deplete.Results.plot_atoms_vs_time()
 openmc.deplete.Results.plot_activity_vs_time()
 ```
