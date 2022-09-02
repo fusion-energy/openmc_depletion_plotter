@@ -16,6 +16,7 @@ stable_nuclides = list(NATURAL_ABUNDANCE.keys())
 
 ureg = pint.UnitRegistry()
 
+
 def add_scale_buttons(figure, x_scale, y_scale):
     if x_scale == "log":
         not_x_scale = "lin"
@@ -58,11 +59,12 @@ def add_scale_buttons(figure, x_scale, y_scale):
     )
     return figure
 
-def create_base_plot(title=''):
+
+def create_base_plot(title=""):
     fig = go.Figure()
     fig.update_layout(title=title)
-    fig.update_yaxes(title='protons')
-    fig.update_xaxes(title='neutrons')
+    fig.update_yaxes(title="protons")
+    fig.update_xaxes(title="neutrons")
     return fig
 
 
@@ -73,32 +75,33 @@ def add_stables(fig):
         y = atomic_number
         x = mass_number - y
         fig.add_shape(
-            x0=x-0.5,
-            x1=x+0.5,
-            y0=y+0.5,
-            y1=y-0.5,
-            xref='x',
-            yref='y',
-            fillcolor='lightgrey',
+            x0=x - 0.5,
+            x1=x + 0.5,
+            y0=y + 0.5,
+            y1=y - 0.5,
+            xref="x",
+            yref="y",
+            fillcolor="lightgrey",
             line_color="lightgrey",
         )
     return fig
 
 
 def update_axis_range_partial_chart(fig, y_vals, x_vals):
-    fig.update(layout_yaxis_range = [0, max(y_vals)+1])
-    fig.update(layout_xaxis_range = [0, max(x_vals)+1])
+    fig.update(layout_yaxis_range=[0, max(y_vals) + 1])
+    fig.update(layout_xaxis_range=[0, max(x_vals) + 1])
 
-    height = max(y_vals)+1
-    width = max(x_vals)+1
+    height = max(y_vals) + 1
+    width = max(x_vals) + 1
     ratio = height / width
     return ratio
+
 
 def update_axis_range_full_chart(fig):
     # fig.update_xaxes(rangemode="tozero")
 
-    fig.update(layout_yaxis_range = [0, 93])
-    fig.update(layout_xaxis_range = [0, 147])
+    fig.update(layout_yaxis_range=[0, 93])
+    fig.update(layout_xaxis_range=[0, 147])
 
     height = 93
     width = 147
@@ -107,6 +110,7 @@ def update_axis_range_full_chart(fig):
 
 
 def find_most_active_nuclides_in_material(
+    units,
     material,
     exclude=None,
 ):
@@ -120,10 +124,10 @@ def find_most_active_nuclides_in_material(
             excluded_isotopes = exclude.get_nuclides()
 
     non_excluded_nucs = {}
-    for key, value in material.get_activity(by_nuclide=True, units='Bq').items():
+    for key, value in material.get_activity(by_nuclide=True, units=units).items():
         if key not in excluded_isotopes:
             if key not in non_excluded_nucs.keys():
-                if value != 0.:
+                if value != 0.0:
                     non_excluded_nucs[key] = value
             else:
                 non_excluded_nucs[key] += value
@@ -138,9 +142,9 @@ def find_most_active_nuclides_in_material(
 
 
 def find_most_active_nuclides_in_materials(
+    units,
     materials,
     exclude=None,
-    specific_activity=False
 ):
     non_excluded_nucs = {}
     if exclude is None:
@@ -152,16 +156,13 @@ def find_most_active_nuclides_in_materials(
             excluded_isotopes = exclude.get_nuclides()
 
     for material in materials:
-        
-        if specific_activity is False:
-            activities = material.get_activity(by_nuclide=True, units='Bq').items()
-        if specific_activity is True:
-            activities = material.get_activity(by_nuclide=True, units='Bq/g').items()
-        
+
+        activities = material.get_activity(by_nuclide=True, units=units).items()
+
         for key, value in activities:
             if key not in excluded_isotopes:
                 if key not in non_excluded_nucs.keys():
-                    if value != 0.:
+                    if value != 0.0:
                         non_excluded_nucs[key] = value
                 else:
                     non_excluded_nucs[key] += value
@@ -175,10 +176,11 @@ def find_most_active_nuclides_in_materials(
 
     return list(sorted_dict.keys())
 
+
 def find_total_activity_in_materials(
+    units,
     materials,
     exclude=None,
-    specific_activity=False
 ):
     non_excluded_nucs = []
     if exclude is None:
@@ -192,10 +194,7 @@ def find_total_activity_in_materials(
     materials_activities = []
     for material in materials:
         material_activity = 0
-        if specific_activity is False:
-            activities = material.get_activity(by_nuclide=True, units='Bq')
-        if specific_activity is True:
-            activities = material.get_activity(by_nuclide=True, units='Bq/g')
+        activities = material.get_activity(by_nuclide=True, units=units)
 
         for key, value in activities.items():
             if key not in excluded_isotopes:
@@ -218,7 +217,7 @@ def find_most_abundant_nuclides_in_material(
             excluded_isotopes = exclude
         elif isinstance(exclude, openmc.Material):
             excluded_isotopes = exclude.get_nuclides()
-            
+
     non_excluded_nucs = {}
     for key, value in material.get_nuclide_atom_densities().items():
         if key not in excluded_isotopes:
@@ -235,7 +234,11 @@ def find_most_abundant_nuclides_in_material(
     }
     return list(sorted_dict.keys())
 
-def find_total_nuclides_in_materials(materials, exclude=None,):
+
+def find_total_nuclides_in_materials(
+    materials,
+    exclude=None,
+):
 
     if exclude is None:
         excluded_isotopes = []
@@ -297,36 +300,22 @@ def get_nuclide_atom_densities_from_materials(nuclides, materials):
             if isotope in quants.keys():
                 quant = quants[isotope]
             else:
-                quant=0.
+                quant = 0.0
             all_quants.append(quant)
         all_nuclides_with_atoms[isotope] = all_quants
     return all_nuclides_with_atoms
 
 
-def get_nuclide_activities_from_materials(nuclides, materials):
+def get_nuclide_activities_from_materials(nuclides, materials, units):
     all_nuclides_with_atoms = {}
     for isotope in nuclides:
         all_quants = []
         for material in materials:
-            quants = material.get_activity(by_nuclide=True, units='Bq')  # units in Bq
+            quants = material.get_activity(by_nuclide=True, units=units)  # units in Bq
             if isotope in quants.keys():
                 quant = quants[isotope]
             else:
-                quant=0.
-            all_quants.append(quant)
-        all_nuclides_with_atoms[isotope] = all_quants
-    return all_nuclides_with_atoms
-
-def get_nuclide_specific_activities_from_materials(nuclides, materials):
-    all_nuclides_with_atoms = {}
-    for isotope in nuclides:
-        all_quants = []
-        for material in materials:
-            quants = material.get_activity(by_nuclide=True, units='Bq/g')  # units in Bq
-            if isotope in quants.keys():
-                quant = quants[isotope]
-            else:
-                quant=0.
+                quant = 0.0
             all_quants.append(quant)
         all_nuclides_with_atoms[isotope] = all_quants
     return all_nuclides_with_atoms
@@ -365,13 +354,14 @@ def get_atoms_from_material(material):
     # print(atoms_per_barn_cm2)
     return isotopes_and_atoms
 
+
 def get_atoms_activity_from_material(material):
 
     if material.volume is None:
         msg = "material.volume must be set to find the activity."
         raise ValueError(msg)
 
-    isotopes_and_activity = material.get_activity(by_nuclide=True, units='Bq')
+    isotopes_and_activity = material.get_activity(by_nuclide=True, units="Bq")
     isotopes_and_atoms = []
     for key, activity in isotopes_and_activity.items():
 
@@ -388,6 +378,7 @@ def get_atoms_activity_from_material(material):
 
     # print(atoms_per_barn_cm2)
     return isotopes_and_atoms
+
 
 def build_grid_of_nuclides(iterable_of_nuclides):
 

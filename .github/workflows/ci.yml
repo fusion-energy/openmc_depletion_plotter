@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+    container:
+      image: openmc/openmc:v0.13.1
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: install package
+        run: |
+          pip install .
+          python -c "import openmc_depletion_plotter"
+      - name: run examples
+        run: |
+          python examples/plot_activity_vs_time.py
+          python examples/plot_isotope_charts.py
+          python examples/plot_multiple_isotope_charts.py
+          python examples/plot_pulse_schedule.py
+      - name: run tests
+        run: |
+          pip install .[tests]
+          pytest tests -v
