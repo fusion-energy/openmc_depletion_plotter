@@ -59,7 +59,11 @@ def plot_activity_vs_time(
         figure.update_layout(
             title=title,
             xaxis={"title": x_axis_title, "type": x_scale},
-            yaxis={"title": f"Activity [{units}]", "type": y_scale},
+            yaxis={
+                "title": f"Activity [{units}]",
+                "type": y_scale,
+                "exponentformat": 'e'
+            },
         )
 
         if threshold:
@@ -158,7 +162,11 @@ def plot_atoms_vs_time(
     figure.update_layout(
         title=title,
         xaxis={"title": x_axis_title, "type": x_scale},
-        yaxis={"title": "Number of atoms", "type": y_scale},
+        yaxis={
+            "title": "Number of atoms",
+            "type": y_scale,
+            "exponentformat": 'e'
+        },
     )
     if threshold:
         total = (
