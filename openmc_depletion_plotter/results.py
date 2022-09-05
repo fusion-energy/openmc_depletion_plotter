@@ -22,7 +22,7 @@ def plot_activity_vs_time(
     x_scale="log",
     y_scale="log",
     title="Activity of nuclides in material",
-    x_axis_title=None, # defaults to time with time units
+    x_axis_title=None,  # defaults to time with time units
     horizontal_lines=[],
     plotting_backend="plotly",
     units="Bq/g",
@@ -59,7 +59,11 @@ def plot_activity_vs_time(
         figure.update_layout(
             title=title,
             xaxis={"title": x_axis_title, "type": x_scale},
-            yaxis={"title": "Activity [Bq/g]", "type": y_scale},
+            yaxis={
+                "title": f"Activity [{units}]",
+                "type": y_scale,
+                "exponentformat": 'e'
+            },
         )
 
         if threshold:
@@ -158,7 +162,11 @@ def plot_atoms_vs_time(
     figure.update_layout(
         title=title,
         xaxis={"title": x_axis_title, "type": x_scale},
-        yaxis={"title": "Number of atoms", "type": y_scale},
+        yaxis={
+            "title": "Number of atoms",
+            "type": y_scale,
+            "exponentformat": 'e'
+        },
     )
     if threshold:
         total = (
