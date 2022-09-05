@@ -23,8 +23,8 @@ def plot_pulse_schedule(
     timestep_units: str = "s",
     plot_type: str = "both"
 ):
-    """Plots the source strength as a function of time and the source status
-    (on / off) on an adjacent subplot.
+    """Plots the source strength as a function of time and the times at which
+    depletion outputs are saved on an adjacent subplot.
 
     Parameters
     ----------
@@ -33,8 +33,8 @@ def plot_pulse_schedule(
         seconds, 'min' means minutes, 'h' means hours, 'a' means Julian
         years and 'MWd/kg' indicates that the values are given in burnup
         (MW-d of energy deposited per kilogram of initial heavy metal).
-    plot_type : {'both', 'strength', 'status'}
-        Whether to plot both plots or just the strength or status plot
+    plot_type : {'both', 'strength', 'timesteps'}
+        Whether to plot both plots or just the strength or the timesteps plot
 
     Returns
     -------
@@ -51,7 +51,7 @@ def plot_pulse_schedule(
         current_time += _get_time_as(time_step, timestep_units)
         linear_time_steps.append(current_time)
 
-    if plot_type in ['both']:
+    if plot_type == 'both':
         fig, axes = plt.subplots(2, 1, gridspec_kw={"height_ratios": [3, 1]})
 
         # adds space between the plots to avoid overlapping x label
@@ -61,10 +61,13 @@ def plot_pulse_schedule(
         axes[0].set_xlabel(f"Time [{timestep_units}]")
         axes[0].stairs(self.source_rates, linear_time_steps, linewidth=2)
 
-        axes[1].bar(linear_time_steps[1:], self.source_rates, color="red")
-
+        for timestep in linear_time_steps[1:]:
+            x_vals = [timestep, timestep]
+            y_vals = [0, 1]  # arbitrary heights selected as axis has no y scale
+            axes[1].plot(x_vals, y_vals, "-", color="red")
+            
         axes[1].set_xlabel(f"Timesteps [{timestep_units}]")
-        axes[1].set_ylim(0, 1.1)
+        axes[1].set_ylim(0, 1)
         axes[1].get_yaxis().set_visible(False)
     else:
         fig, axes = plt.subplots()
@@ -74,11 +77,14 @@ def plot_pulse_schedule(
             axes.set_xlabel(f"Time [{timestep_units}]")
             axes.stairs(self.source_rates, linear_time_steps, linewidth=2)
 
-        elif plot_type == 'status':
-            axes.bar(linear_time_steps[1:], self.source_rates, color="red")
-
+        elif plot_type == 'timesteps':
+            for timestep in linear_time_steps[1:]:
+                x_vals = [timestep, timestep]
+                y_vals = [0, 1]  # arbitrary heights selected as axis has no y scale
+                axes.plot(x_vals, y_vals, "-", color="red")
+           
             axes.set_xlabel(f"Timesteps [{timestep_units}]")
-            axes.set_ylim(0, 1.1)
+            axes.set_ylim(0, 1)
             axes.get_yaxis().set_visible(False)
 
     return fig
