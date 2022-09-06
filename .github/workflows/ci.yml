@@ -33,6 +33,7 @@ jobs:
 
           python examples/activity_atoms_vs_time/simulate_silver_depletion.py
           python examples/activity_atoms_vs_time/plot_activity_vs_time.py
+          python examples/activity_atoms_vs_time/plot_atoms_vs_time.py
 
           python examples/isotope_charts/plot_isotope_charts.py
           python examples/isotope_charts/plot_multiple_isotope_charts.py

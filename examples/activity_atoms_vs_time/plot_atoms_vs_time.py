@@ -27,6 +27,7 @@ plot = results.plot_atoms_vs_time(
     excluded_material=my_unirradiated_material,
     time_units="s",
     plotting_backend="matplotlib",
+    show_top=6
 )
 # plot.show()
 plot.savefig("atoms_vs_time_silver_activation.png")

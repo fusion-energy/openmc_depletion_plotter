@@ -76,6 +76,10 @@ def plot_activity_vs_time(
         add_scale_buttons(figure, x_scale, y_scale)
     elif plotting_backend == "matplotlib":
         plt.cla
+        fig = plt.figure()
+        plt.xlabel(x_axis_title)
+        plt.ylabel("Number of atoms")
+        plt.title(title)
     else:
         msg = 'only "plotly" and "matplotlib" plotting_backend are supported. {plotting_backend} is not an option'
         raise ValueError(msg)
@@ -126,6 +130,8 @@ def plot_activity_vs_time(
     if plotting_backend == "plotly":
         return figure
     else:
+        plt.legend(bbox_to_anchor=(1.25, 1.))
+        plt.tight_layout()
         return plt
 
 
@@ -183,6 +189,10 @@ def plot_atoms_vs_time(
         add_scale_buttons(figure, x_scale, y_scale)
     elif plotting_backend == "matplotlib":
         plt.cla
+        fig = plt.figure()
+        plt.xlabel(x_axis_title)
+        plt.ylabel("Number of atoms")
+        plt.title(title)
     else:
         msg = 'only "plotly" and "matplotlib" plotting_backend are supported. {plotting_backend} is not an option'
         raise ValueError(msg)
@@ -227,6 +237,8 @@ def plot_atoms_vs_time(
     if plotting_backend == "plotly":
         return figure
     else:
+        plt.legend(bbox_to_anchor=(1.25, 1.))
+        plt.tight_layout()
         return plt
 
 
