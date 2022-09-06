@@ -1,3 +1,4 @@
+from turtle import color
 from typing import Iterable
 
 import numpy as np
@@ -58,8 +59,24 @@ def add_scale_buttons(figure, x_scale, y_scale):
 def create_base_plot(title=""):
     fig = go.Figure()
     fig.update_layout(title=title)
-    fig.update_yaxes(title="protons")
-    fig.update_xaxes(title="neutrons")
+    fig.update_yaxes(title="Protons")
+    fig.update_xaxes(title="Neutrons")
+    return fig
+
+
+def add_key(fig, key_name='Stable nuclides', color='lightgrey'):
+
+    fig.add_trace(
+        go.Scatter(
+            x=[-10],  #
+            y=[-10],
+            mode='markers',
+            name=key_name,
+            line={'color': color},
+            marker_symbol='square',
+            marker={'size': 30}
+        )
+    )
     return fig
 
 
@@ -78,7 +95,9 @@ def add_stables(fig):
             yref="y",
             fillcolor="lightgrey",
             line_color="lightgrey",
+            # opacity=0.5
         )
+
     return fig
 
 
@@ -344,14 +363,14 @@ def get_atoms_from_material(material):
     return isotopes_and_atoms
 
 
-def get_atoms_activity_from_material(material: openmc.Material):
+def get_atoms_activity_from_material(material: openmc.Material, units='Bq'):
 
-
-    if material.volume is None:
+    if units=='Bq' and material.volume is None:
         msg = "material.volume must be set to find the activity."
         raise ValueError(msg)
 
-    isotopes_and_activity = material.get_activity(by_nuclide=True, units="Bq")
+    isotopes_and_activity = material.get_activity(
+        by_nuclide=True, units=units)
     isotopes_and_atoms = []
     for key, activity in isotopes_and_activity.items():
 
