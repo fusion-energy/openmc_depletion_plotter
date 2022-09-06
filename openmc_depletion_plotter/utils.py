@@ -64,17 +64,17 @@ def create_base_plot(title=""):
     return fig
 
 
-def add_key(fig, key_name='Stable nuclides', color='lightgrey'):
+def add_key(fig, key_name="Stable nuclides", color="lightgrey"):
 
     fig.add_trace(
         go.Scatter(
             x=[-10],  #
             y=[-10],
-            mode='markers',
+            mode="markers",
             name=key_name,
-            line={'color': color},
-            marker_symbol='square',
-            marker={'size': 30}
+            line={"color": color},
+            marker_symbol="square",
+            marker={"size": 30},
         )
     )
     return fig
@@ -363,14 +363,13 @@ def get_atoms_from_material(material):
     return isotopes_and_atoms
 
 
-def get_atoms_activity_from_material(material: openmc.Material, units='Bq'):
+def get_atoms_activity_from_material(material: openmc.Material, units="Bq"):
 
-    if units=='Bq' and material.volume is None:
+    if units == "Bq" and material.volume is None:
         msg = "material.volume must be set to find the activity."
         raise ValueError(msg)
 
-    isotopes_and_activity = material.get_activity(
-        by_nuclide=True, units=units)
+    isotopes_and_activity = material.get_activity(by_nuclide=True, units=units)
     isotopes_and_atoms = []
     for key, activity in isotopes_and_activity.items():
 

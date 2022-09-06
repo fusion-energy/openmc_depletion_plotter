@@ -1,24 +1,27 @@
 import openmc
 import openmc.deplete
-import openmc_depletion_plotter
+import openmc_depletion_plotter  # adds plot_atoms_vs_time and plot_activity_vs_time methods to openmc.deplete.Results
 
 
 results = openmc.deplete.Results.from_hdf5("depletion_results.h5")
 
-# the original simulate irradiated Silver (Ag)
-# We don't want to include the stable Silver nuclides in the plot
-# this makes a material from Silver so that it can be excluded from plots
-my_unirradiated_material = openmc.Material()
-my_unirradiated_material.add_element("Ag", 1)
-
-# plots the atoms (nuclides) as a function of time
-plot = results.plot_atoms_vs_time(
-    excluded_material=my_unirradiated_material, time_units="s"
-)
-plot.show()
 
 # plots the atoms activity in Bq/g as a function of time
 plot = results.plot_activity_vs_time(
-    excluded_material=my_unirradiated_material, time_units="s"
+    time_units="s",
+    units="Bq/g",
+    plotting_backend="plotly",
 )
 plot.show()
+plot.write_html("activity_vs_time_silver_activation.html")
+plot.write_image("activity_vs_time_silver_activation.png")
+
+
+# plots the atoms activity in Bq/g as a function of time
+plot = results.plot_activity_vs_time(
+    time_units="s",
+    units="Bq/g",
+    plotting_backend="matplotlib",
+)
+plot.show()
+plot.savefig("activity_vs_time_silver_activation.png")

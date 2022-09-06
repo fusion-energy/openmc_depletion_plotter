@@ -53,7 +53,7 @@ def plot_activity_vs_time(
     )
 
     if x_axis_title is None:
-        x_axis_title = f'Time [{time_units}]'
+        x_axis_title = f"Time [{time_units}]"
     if plotting_backend == "plotly":
         figure = go.Figure()
         figure.update_layout(
@@ -62,7 +62,7 @@ def plot_activity_vs_time(
             yaxis={
                 "title": f"Activity [{units}]",
                 "type": y_scale,
-                "exponentformat": 'e'
+                "exponentformat": "e",
             },
         )
 
@@ -74,8 +74,11 @@ def plot_activity_vs_time(
             )
             figure.update_layout(yaxis_range=[threshold, max(total)])
         add_scale_buttons(figure, x_scale, y_scale)
-    else:
+    elif plotting_backend == "matplotlib":
         plt.cla
+    else:
+        msg = 'only "plotly" and "matplotlib" plotting_backend are supported. {plotting_backend} is not an option'
+        raise ValueError(msg)
 
     for key, value in all_nuclides_with_atoms.items():
 
@@ -105,6 +108,8 @@ def plot_activity_vs_time(
                     line=dict(dash="longdashdot", color="black"),
                 )
             )
+        else:
+            print("include_total not supported for this plotting_backend")
 
     for name, value in horizontal_lines:
         if plotting_backend == "plotly":
@@ -117,8 +122,11 @@ def plot_activity_vs_time(
                     line=dict(dash="dot", color="black"),
                 )
             )
-    plt.show()
-    return figure
+
+    if plotting_backend == "plotly":
+        return figure
+    else:
+        return plt
 
 
 def plot_atoms_vs_time(
@@ -130,6 +138,7 @@ def plot_atoms_vs_time(
     y_scale="linear",
     include_total=False,
     x_axis_title=None,
+    plotting_backend="plotly",
     threshold=None,
     title="Number of of nuclides in material",
 ):
@@ -156,61 +165,69 @@ def plot_atoms_vs_time(
     )
 
     if x_axis_title is None:
-        x_axis_title = f'Time [{time_units}]'
-
-    figure = go.Figure()
-    figure.update_layout(
-        title=title,
-        xaxis={"title": x_axis_title, "type": x_scale},
-        yaxis={
-            "title": "Number of atoms",
-            "type": y_scale,
-            "exponentformat": 'e'
-        },
-    )
-    if threshold:
-        total = (
-            find_total_nuclides_in_materials(
-                all_materials, exclude=excluded_material
-            ),
+        x_axis_title = f"Time [{time_units}]"
+    if plotting_backend == "plotly":
+        figure = go.Figure()
+        figure.update_layout(
+            title=title,
+            xaxis={"title": x_axis_title, "type": x_scale},
+            yaxis={"title": "Number of atoms", "type": y_scale, "exponentformat": "e"},
         )
-        figure.update_layout(yaxis_range=[threshold, max(total)])
-
-    add_scale_buttons(figure, x_scale, y_scale)
+        if threshold:
+            total = (
+                find_total_nuclides_in_materials(
+                    all_materials, exclude=excluded_material
+                ),
+            )
+            figure.update_layout(yaxis_range=[threshold, max(total)])
+        add_scale_buttons(figure, x_scale, y_scale)
+    elif plotting_backend == "matplotlib":
+        plt.cla
+    else:
+        msg = 'only "plotly" and "matplotlib" plotting_backend are supported. {plotting_backend} is not an option'
+        raise ValueError(msg)
 
     for key, value in all_nuclides_with_atoms.items():
         if threshold:
             value = np.array(value)
             value[value < threshold] = np.nan
-
         if key in stable_nuclides:
             name = key + " stable"
         else:
             name = key
-        figure.add_trace(
-            go.Scatter(
-                mode="lines",
-                x=time_steps,
-                y=value,
-                name=name,
-                # line=dict(shape="hv", width=0),
+        if plotting_backend == "plotly":
+            figure.add_trace(
+                go.Scatter(
+                    mode="lines",
+                    x=time_steps,
+                    y=value,
+                    name=name,
+                    # line=dict(shape="hv", width=0),
+                )
             )
-        )
+        else:
+            plt.plot(time_steps, value, label=key)
 
     if include_total:
-        figure.add_trace(
-            go.Scatter(
-                mode="lines",
-                x=time_steps,
-                y=find_total_nuclides_in_materials(
-                    all_materials, exclude=excluded_material
-                ),
-                name="total",
-                line=dict(dash="longdashdot", color="black"),
+        if plotting_backend == "plotly":
+            figure.add_trace(
+                go.Scatter(
+                    mode="lines",
+                    x=time_steps,
+                    y=find_total_nuclides_in_materials(
+                        all_materials, exclude=excluded_material
+                    ),
+                    name="total",
+                    line=dict(dash="longdashdot", color="black"),
+                )
             )
-        )
+        else:
+            print("include_total not supported for this plotting_backend")
 
-    return figure
+    if plotting_backend == "plotly":
+        return figure
+    else:
+        return plt
 
 
 openmc.deplete.Results.plot_activity_vs_time = plot_activity_vs_time

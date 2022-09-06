@@ -19,7 +19,6 @@ def plot_isotope_chart_of_atoms(self, show_all=True, title="Numbers of nuclides"
 
     y_vals, x_vals, c_vals, l_vals = zip(*xycl)
 
-
     fig = create_base_plot(title=title)
     fig = add_stables(fig)
     fig = add_key(fig)
@@ -27,25 +26,32 @@ def plot_isotope_chart_of_atoms(self, show_all=True, title="Numbers of nuclides"
 
     hover_text = []
     for y_val, x_val, c_val, l_val in zip(y_vals, x_vals, c_vals, l_vals):
-        hover_text.append(f"Nuclide {l_val} <br> Neutrons {x_val} <br> Protons {y_val} <br> Atoms {c_val:.2E}")
+        hover_text.append(
+            f"Nuclide {l_val} <br> Neutrons {x_val} <br> Protons {y_val} <br> Atoms {c_val:.2E}"
+        )
 
     # add scatter points for all the isotopes
     fig.add_trace(
         go.Scatter(
             x=x_vals,
             y=y_vals,
-            mode='markers',
-            name='material',
+            mode="markers",
+            name="material",
             showlegend=False,
             opacity=1,  # makes the scatter invisible
             text=hover_text,
-            hoverinfo='text',
+            hoverinfo="text",
             marker=dict(
                 color=c_vals,
-                colorscale='viridis',
+                colorscale="viridis",
                 showscale=True,
                 # https://plotly.com/python/reference/#heatmap-colorbar
-                colorbar = {'title': 'Number of nuclides', 'len':0.85, 'titleside':'right', 'exponentformat':'e'}, 
+                colorbar={
+                    "title": "Number of nuclides",
+                    "len": 0.85,
+                    "titleside": "right",
+                    "exponentformat": "e",
+                },
             ),
         ),
     )
@@ -92,7 +98,9 @@ def plot_isotope_chart_of_atoms(self, show_all=True, title="Numbers of nuclides"
     return fig
 
 
-def plot_isotope_chart_of_activity(self, show_all=True, title="Activity of nuclides", units='Bq'):
+def plot_isotope_chart_of_activity(
+    self, show_all=True, title="Activity of nuclides", units="Bq"
+):
     xycl = get_atoms_activity_from_material(self, units=units)
 
     y_vals, x_vals, c_vals, l_vals = zip(*xycl)
@@ -103,25 +111,32 @@ def plot_isotope_chart_of_activity(self, show_all=True, title="Activity of nucli
 
     hover_text = []
     for y_val, x_val, c_val, l_val in zip(y_vals, x_vals, c_vals, l_vals):
-        hover_text.append(f"Nuclide {l_val} <br> Neutrons {x_val} <br> Protons {y_val} <br> Activity {c_val:.2E} {units}")
+        hover_text.append(
+            f"Nuclide {l_val} <br> Neutrons {x_val} <br> Protons {y_val} <br> Activity {c_val:.2E} {units}"
+        )
 
     # add scatter points for all the isotopes
     fig.add_trace(
         go.Scatter(
             x=x_vals,
             y=y_vals,
-            mode='markers',
-            name='material',
+            mode="markers",
+            name="material",
             showlegend=False,
             opacity=1,  # makes the scatter invisible
             text=hover_text,
-            hoverinfo='text',
+            hoverinfo="text",
             marker=dict(
                 color=c_vals,
-                colorscale='viridis',
+                colorscale="viridis",
                 showscale=True,
                 # https://plotly.com/python/reference/#heatmap-colorbar
-                colorbar = {'title': f'Activity of nuclides [{units}]', 'len':0.85, 'titleside':'right', 'exponentformat':'e'}, 
+                colorbar={
+                    "title": f"Activity of nuclides [{units}]",
+                    "len": 0.85,
+                    "titleside": "right",
+                    "exponentformat": "e",
+                },
             ),
         ),
     )
