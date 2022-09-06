@@ -45,7 +45,7 @@ def plot_isotope_chart_of_atoms(self, show_all=True, title="Numbers of nuclides"
                 colorscale='viridis',
                 showscale=True,
                 # https://plotly.com/python/reference/#heatmap-colorbar
-                colorbar = {'title': 'Number of nuclides', 'len':0.85, 'titleside':'right'}, 
+                colorbar = {'title': 'Number of nuclides', 'len':0.85, 'titleside':'right', 'exponentformat':'e'}, 
             ),
         ),
     )
@@ -121,7 +121,7 @@ def plot_isotope_chart_of_activity(self, show_all=True, title="Activity of nucli
                 colorscale='viridis',
                 showscale=True,
                 # https://plotly.com/python/reference/#heatmap-colorbar
-                colorbar = {'title': f'Activity of nuclides [{units}]', 'len':0.85, 'titleside':'right'}, 
+                colorbar = {'title': f'Activity of nuclides [{units}]', 'len':0.85, 'titleside':'right', 'exponentformat':'e'}, 
             ),
         ),
     )
