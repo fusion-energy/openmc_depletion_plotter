@@ -137,5 +137,7 @@ _version.py
 # output xml files from openmc
 *.xml
 
-*.html
-*.png
+**.html
+**.png
+**.h5
+**.out

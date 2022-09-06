@@ -4,6 +4,9 @@ One benefit of this is the user can continue to work with the familiar OpenMC cl
 Another benefit is that if any of these functions ever become popular enough to include in OpenMC then it could be done with a simple copy paste into the existing class structure.
 Plotly figures or MatPlotLib figures are returned for user customization.
 
+
+:point_right: [Examples](https://github.com/fusion-energy/openmc_depletion_plotter/tree/main/examples)
+
 # Plotting pulse schedule
 
 All the Integrator classes have been extended to include a ```.plot_pulse_schedule()``` method.
@@ -25,12 +28,15 @@ openmc.deplete.SICELIIntegrator.plot_pulse_schedule()
 openmc.deplete.SILEQIIntegrator.plot_pulse_schedule()
 ```
 
+![openmc pulse time plot](https://user-images.githubusercontent.com/8583900/188698064-9ffae002-844d-4cdf-aca2-b87d9a8f39b4.png)
+
 # Plotting activation or atoms as a function of time
 
 The ```openmc.deplete.Results()``` class has been extended to include a ```plot_atoms_vs_time()``` method and a ```plot_activity_vs_time``` method.
 
 These methods plot atoms or activity as a function of time.
 These plots optionally include a breakdown of the dominant nuclides.
+Matplotlib or Plotly backends are available.
 
 Additional methods provided
 
@@ -38,6 +44,9 @@ Additional methods provided
 openmc.deplete.Results.plot_atoms_vs_time()
 openmc.deplete.Results.plot_activity_vs_time()
 ```
+
+![openmc matplotlib activity](https://user-images.githubusercontent.com/8583900/188697525-a156c538-1d67-4efe-b19d-f34850af8b1f.png)
+![openmc plotly activity](https://user-images.githubusercontent.com/8583900/188697666-13f4ed29-3293-44f7-99d2-7eabf48d54cb.png)
 
 # Plotting activation or atoms on an isotope chart
 
@@ -53,3 +62,4 @@ Additional methods provided
 openmc.Material.plot_isotope_chart_of_atoms()
 openmc.Material.plot_isotope_chart_of_activity()
 ```
+![openmc plotly activity](https://user-images.githubusercontent.com/8583900/188697852-962e47d2-4f41-4449-abb1-7cc0b39996e0.png)
