@@ -123,6 +123,5 @@ def plot_isotope_chart_of_activity(self, show_all=True, title="Activity of nucli
     )
     return fig
 
-
 openmc.Material.plot_isotope_chart_of_atoms = plot_isotope_chart_of_atoms
 openmc.Material.plot_isotope_chart_of_activity = plot_isotope_chart_of_activity
