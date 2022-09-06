@@ -11,7 +11,9 @@ jobs:
   testing:
     runs-on: ubuntu-latest
     container:
-      image: openmc/openmc:v0.13.1
+      # could use last stable image
+      # image: openmc/openmc:v0.13.1
+      image: openmc/openmc:develop
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

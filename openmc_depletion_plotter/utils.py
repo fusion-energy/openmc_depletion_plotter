@@ -1,15 +1,10 @@
 from typing import Iterable
-import openmc
 
 import numpy as np
 import openmc
 import pint
-
 import plotly.graph_objects as go
-
 from openmc.data import ATOMIC_SYMBOL, NATURAL_ABUNDANCE
-
-from openmc.data import NATURAL_ABUNDANCE
 
 stable_nuclides = list(NATURAL_ABUNDANCE.keys())
 
@@ -98,7 +93,6 @@ def update_axis_range_partial_chart(fig, y_vals, x_vals):
 
 
 def update_axis_range_full_chart(fig):
-    # fig.update_xaxes(rangemode="tozero")
 
     fig.update(layout_yaxis_range=[0, 93])
     fig.update(layout_xaxis_range=[0, 147])
@@ -331,14 +325,10 @@ def get_atoms_from_material(material):
     atoms_per_barn_cm2 = material.get_nuclide_atom_densities()
     volume = material.volume * ureg.cm**3
 
-    # print(atoms_per_barn_cm2)
     isotopes_and_atoms = []
     for key, value in atoms_per_barn_cm2.items():
-        # print(key, value[1])
         atoms_per_b_cm = value * ureg.particle / (ureg.barn * ureg.cm)
         atoms = atoms_per_b_cm * volume
-        # print(key, atoms)
-        # print(key, atoms.to(ureg.particle))
 
         atomic_number, mass_number, _ = openmc.data.zam(key)
 
@@ -351,11 +341,11 @@ def get_atoms_from_material(material):
             )
         )
 
-    # print(atoms_per_barn_cm2)
     return isotopes_and_atoms
 
 
-def get_atoms_activity_from_material(material):
+def get_atoms_activity_from_material(material: openmc.Material):
+
 
     if material.volume is None:
         msg = "material.volume must be set to find the activity."
@@ -376,7 +366,6 @@ def get_atoms_activity_from_material(material):
             )
         )
 
-    # print(atoms_per_barn_cm2)
     return isotopes_and_atoms
 
 
@@ -387,7 +376,6 @@ def build_grid_of_nuclides(iterable_of_nuclides):
     grid = np.array([[0] * grid_width] * grid_height, dtype=float)
 
     for atomic_number, neutron_number, atoms, _ in iterable_of_nuclides:
-        # print(atomic_number,neutron_number,atoms )
         grid[atomic_number][neutron_number] = atoms
 
     return grid
@@ -400,7 +388,6 @@ def build_grid_of_stable_nuclides(iterable_of_nuclides):
     grid = np.array([[0] * grid_width] * grid_height, dtype=float)
 
     for atomic_number, neutron_number in iterable_of_nuclides:
-        # print(atomic_number,neutron_number,atoms )
         grid[atomic_number][
             neutron_number
         ] = 0.2  # sets the grey scale from 0 (white) to 1 (black)
