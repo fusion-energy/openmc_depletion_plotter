@@ -1,3 +1,7 @@
+[![N|Python](https://www.python.org/static/community_logos/python-powered-w-100x40.png)](https://www.python.org)
+
+[![CI](https://github.com/fusion-energy/openmc_depletion_plotter/actions/workflows/ci.yml/badge.svg)](https://github.com/fusion-energy/openmc_depletion_plotter/actions/workflows/ci.yml)
+
 Extends OpenMC to provides convienent plotting methods.
 This is done by Monkey Patching OpenMC to provide additional functionality to the base classes.
 One benefit of this is the user can continue to work with the familiar OpenMC classes and they simply get additional functionality.
