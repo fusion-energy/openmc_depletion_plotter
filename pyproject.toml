@@ -1,10 +1,44 @@
 [build-system]
-requires = [
-    "setuptools >= 46.4.0",
-    "wheel",
-    "setuptools_scm[toml] >= 6.3.1",
-]
+requires = ["setuptools >= 65.4.0", "setuptools_scm[toml]>=7.0.5"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "openmc_depletion_plotter"
+authors = [
+  { name="Jonathan Shimwell", email="mail@jshimwell.com" },
+]
+license = {file = "LICENSE.txt"}
+description = "Plot the isotopes present during depletion steps."
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["dagmc", "geometry", "plot", "slice"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "pint",
+    "plotly",
+    "numpy",
+    "matplotlib",
+    "kaleido",
+]
+dynamic = ["version"]
+
+
 [tool.setuptools_scm]
-write_to = "openmc_depletion_plotter/_version.py"
+write_to = "src/openmc_depletion_plotter/_version.py"
+
+
+[project.optional-dependencies]
+tests = [
+    "pytest"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/fusion-energy/openmc_depletion_plotter"
+"Bug Tracker" = "https://github.com/fusion-energy/openmc_depletion_plotter/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
