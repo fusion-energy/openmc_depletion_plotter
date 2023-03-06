@@ -49,7 +49,7 @@ model.settings = settings
 # this tells openmc the decay paths between isotopes including probabilities of different routes and half lives
 chain_filename = "chain-nndc-b7.1.xml"
 
-operator = openmc.deplete.Operator(
+operator = openmc.deplete.CoupledOperator(
     model=model,
     chain_file=chain_filename,
     normalization_mode="source-rate",
