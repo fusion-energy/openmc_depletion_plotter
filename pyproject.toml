@@ -36,6 +36,9 @@ tests = [
     "pytest"
 ]
 
+[project.scripts]
+openmc_depletion_plotter = "openmc_depletion_plotter.launch:main"
+
 [project.urls]
 "Homepage" = "https://github.com/fusion-energy/openmc_depletion_plotter"
 "Bug Tracker" = "https://github.com/fusion-energy/openmc_depletion_plotter/issues"
