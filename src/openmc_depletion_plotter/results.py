@@ -29,14 +29,18 @@ def plot_activity_vs_time(
     units="Bq/g",
     threshold=None,
     include_total=True,
-    material_index=0 # zero index is first depletable material in problem
+    material_index=0, # zero index is first depletable material in problem
+    path='materials.xml'
 ):
 
     time_steps = self.get_times(time_units=time_units)
 
     all_materials = []
     for counter, step in enumerate(time_steps):
-        materials = self.export_to_materials(counter)[
+        materials = self.export_to_materials(
+            burnup_index=counter,
+            path=path
+        )[
             material_index
         ]  
         all_materials.append(materials)
@@ -148,15 +152,20 @@ def plot_atoms_vs_time(
     plotting_backend="plotly",
     threshold=None,
     title="Number of of nuclides in material",
+    material_index=0, # zero index as one material in problem
+    path='materials.xml'
 ):
 
     time_steps = self.get_times(time_units=time_units)
 
     all_materials = []
     for counter, step in enumerate(time_steps):
-        materials = self.export_to_materials(counter)[
-            0
-        ]  # zero index as one material in problem
+        materials = self.export_to_materials(
+            burnup_index=counter,
+            path=path
+        )[
+            material_index
+        ]
         all_materials.append(materials)
 
     most_abundant = find_most_abundant_nuclides_in_materials(

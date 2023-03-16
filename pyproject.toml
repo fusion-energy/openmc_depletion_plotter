@@ -21,6 +21,7 @@ dependencies = [
     "pint",
     "plotly",
     "numpy",
+    "streamlit",
     "matplotlib",
     "kaleido",
 ]
