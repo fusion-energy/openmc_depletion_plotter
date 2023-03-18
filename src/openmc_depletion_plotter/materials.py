@@ -105,7 +105,7 @@ def plot_isotope_chart_of_activity(
 
     y_vals, x_vals, c_vals, l_vals = zip(*xycl)
 
-    fig = create_base_plot(title=title, ytitle="Protons", xtitle="Neutrons")
+    fig = create_base_plot(title=title, y_title="Protons", x_title="Neutrons")
     fig = add_stables(fig)
     fig = add_key(fig)
 
