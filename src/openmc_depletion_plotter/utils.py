@@ -56,11 +56,17 @@ def add_scale_buttons(figure, x_scale, y_scale):
     return figure
 
 
-def create_base_plot(title=""):
+def create_base_plot(x_title, y_title, title="", x_scale="linear", y_scale="linear"):
     fig = go.Figure()
-    fig.update_layout(title=title)
-    fig.update_yaxes(title="Protons")
-    fig.update_xaxes(title="Neutrons")
+    fig.update_layout(
+        title=title,
+        xaxis={"title": x_title, "type": x_scale},
+        yaxis={
+            "title": y_title,
+            "type": y_scale,
+            "exponentformat": "e",
+        },
+    )
     return fig
 
 

@@ -6,6 +6,7 @@ from .utils import get_nuclide_activities_from_materials
 from .utils import get_nuclide_activities_from_materials
 from .utils import find_total_activity_in_materials
 from .utils import stable_nuclides
+from .utils import create_base_plot
 from .utils import get_nuclide_atom_densities_from_materials
 from .utils import find_most_abundant_nuclides_in_materials
 from .utils import find_total_nuclides_in_materials
@@ -28,15 +29,17 @@ def plot_activity_vs_time(
     units="Bq/g",
     threshold=None,
     include_total=True,
+    material_index=0,  # zero index is first depletable material in problem
+    path="materials.xml",
 ):
 
     time_steps = self.get_times(time_units=time_units)
 
     all_materials = []
     for counter, step in enumerate(time_steps):
-        materials = self.export_to_materials(counter)[
-            0
-        ]  # zero index as one material in problem
+        materials = self.export_to_materials(burnup_index=counter, path=path)[
+            material_index
+        ]
         all_materials.append(materials)
 
     most_active = find_most_active_nuclides_in_materials(
@@ -54,16 +57,14 @@ def plot_activity_vs_time(
 
     if x_axis_title is None:
         x_axis_title = f"Time [{time_units}]"
+
     if plotting_backend == "plotly":
-        figure = go.Figure()
-        figure.update_layout(
+        figure = create_base_plot(
+            x_title=x_axis_title,
+            y_title=f"Activity [{units}]",
             title=title,
-            xaxis={"title": x_axis_title, "type": x_scale},
-            yaxis={
-                "title": f"Activity [{units}]",
-                "type": y_scale,
-                "exponentformat": "e",
-            },
+            x_scale=x_scale,
+            y_scale=y_scale,
         )
 
         if threshold:
@@ -74,12 +75,15 @@ def plot_activity_vs_time(
             )
             figure.update_layout(yaxis_range=[threshold, max(total)])
         add_scale_buttons(figure, x_scale, y_scale)
+
     elif plotting_backend == "matplotlib":
         plt.cla
         fig = plt.figure()
         plt.xlabel(x_axis_title)
-        plt.ylabel("Number of atoms")
+        plt.ylabel(f"Activity [{units}]")
         plt.title(title)
+        plt.yscale(y_scale)
+        plt.xscale(x_scale)
     else:
         msg = 'only "plotly" and "matplotlib" plotting_backend are supported. {plotting_backend} is not an option'
         raise ValueError(msg)
@@ -113,7 +117,12 @@ def plot_activity_vs_time(
                 )
             )
         else:
-            print("include_total not supported for this plotting_backend")
+
+            y=find_total_activity_in_materials(
+                materials=all_materials, units=units, exclude=excluded_material
+            )
+            plt.plot(time_steps, y, 'k--', label='total')
+
 
     for name, value in horizontal_lines:
         if plotting_backend == "plotly":
@@ -130,7 +139,7 @@ def plot_activity_vs_time(
     if plotting_backend == "plotly":
         return figure
     else:
-        plt.legend(bbox_to_anchor=(1.25, 1.))
+        plt.legend(bbox_to_anchor=(1.25, 1.0))
         plt.tight_layout()
         return plt
 
@@ -147,15 +156,17 @@ def plot_atoms_vs_time(
     plotting_backend="plotly",
     threshold=None,
     title="Number of of nuclides in material",
+    material_index=0,  # zero index as one material in problem
+    path="materials.xml",
 ):
 
     time_steps = self.get_times(time_units=time_units)
 
     all_materials = []
     for counter, step in enumerate(time_steps):
-        materials = self.export_to_materials(counter)[
-            0
-        ]  # zero index as one material in problem
+        materials = self.export_to_materials(burnup_index=counter, path=path)[
+            material_index
+        ]
         all_materials.append(materials)
 
     most_abundant = find_most_abundant_nuclides_in_materials(
@@ -173,12 +184,15 @@ def plot_atoms_vs_time(
     if x_axis_title is None:
         x_axis_title = f"Time [{time_units}]"
     if plotting_backend == "plotly":
-        figure = go.Figure()
-        figure.update_layout(
+
+        figure = create_base_plot(
+            x_title=x_axis_title,
+            y_title=f"Number of atoms",
             title=title,
-            xaxis={"title": x_axis_title, "type": x_scale},
-            yaxis={"title": "Number of atoms", "type": y_scale, "exponentformat": "e"},
+            x_scale=x_scale,
+            y_scale=y_scale,
         )
+
         if threshold:
             total = (
                 find_total_nuclides_in_materials(
@@ -219,25 +233,27 @@ def plot_atoms_vs_time(
             plt.plot(time_steps, value, label=key)
 
     if include_total:
+        total = find_total_nuclides_in_materials(
+            all_materials, exclude=excluded_material
+        )
         if plotting_backend == "plotly":
             figure.add_trace(
                 go.Scatter(
                     mode="lines",
                     x=time_steps,
-                    y=find_total_nuclides_in_materials(
-                        all_materials, exclude=excluded_material
-                    ),
+                    y=total,
                     name="total",
                     line=dict(dash="longdashdot", color="black"),
                 )
             )
         else:
-            print("include_total not supported for this plotting_backend")
+
+            plt.plot(time_steps, total, 'k--', label='total')
 
     if plotting_backend == "plotly":
         return figure
     else:
-        plt.legend(bbox_to_anchor=(1.25, 1.))
+        plt.legend(bbox_to_anchor=(1.25, 1.0))
         plt.tight_layout()
         return plt
 
