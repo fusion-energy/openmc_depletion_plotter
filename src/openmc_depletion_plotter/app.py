@@ -98,7 +98,7 @@ def main():
         
         acitivity_or_atoms = st.sidebar.selectbox(
             label="Plot",
-            options=("activity", "atoms"),
+            options=("activity", "number of atoms"),
             index=0,
             key="acitivity_or_atoms",
             help="",
@@ -115,27 +115,28 @@ def main():
             options=("s", "min", "h", "d", "a"),
             index=0,
             key="time_units",
-            help="",
+            help="The time units to use on the Y aixs, seconds minutes, hours, days or years",
         )
         x_scale = st.sidebar.selectbox(
             label="X scale",
             options=("linear", "log"),
             index=0,
             key="x_scale",
-            help="",
+            help="The axis scale to use for the X axis",
         )
         y_scale = st.sidebar.selectbox(
             label="Y scale",
             options=("linear", "log"),
             index=0,
             key="y_scale",
-            help="",
+            help="The axis scale to use for the Y axis",
         )
+        
         show_top = st.sidebar.number_input(
-            value=0,
+            value=10,
             label="Show top",
             key="show_top",
-            help="",
+            help=f"The maximum number of nuclides to plot starting with the largest {acitivity_or_atoms}",
         )
 
         if acitivity_or_atoms=='activity':
@@ -148,7 +149,6 @@ def main():
             )
             #todo horizontal_lines
 
-        # to do find the number of depleted materials in the file
         if number_of_depleted_materials == 1:
             material_index = 0
         elif number_of_depleted_materials > 1:
@@ -168,8 +168,8 @@ def main():
         #     help="",
         # )
 
-        include_total = st.sidebar.radio('Include total', options=(True, False))
-        excluded_material = st.sidebar.radio('Exclude nuclides from undepleted material', options=(True, False))
+        include_total = st.sidebar.radio('Include total', options=(True, False), help='Add a line to the plot showing the total (or sum) of all other lines.')
+        excluded_material = st.sidebar.radio('Exclude nuclides from undepleted material', options=(True, False), help='Allows nuclides in the orginal material to be excluded so that the nuclides created during depletion can be clearly shown.')
 
         if excluded_material:
             material_to_exclude = all_pristine_mats[material_index]
@@ -215,6 +215,8 @@ def main():
         if backend == "matplotlib":
             st.pyplot(plot)
         else:
+            # remove log line selector
+            plot.layout['updatemenus']=[]
             st.plotly_chart(plot)
 
 if __name__ == "__main__":
