@@ -19,7 +19,7 @@ def plot_isotope_chart_of_atoms(self, show_all=True, title="Numbers of nuclides"
 
     y_vals, x_vals, c_vals, l_vals = zip(*xycl)
 
-    fig = create_base_plot(title=title, ytitle='Protons', xtitle='Neutrons')
+    fig = create_base_plot(title=title, ytitle="Protons", xtitle="Neutrons")
     fig = add_stables(fig)
     fig = add_key(fig)
     # fig = add_key(fig, key_name='nuclide present in material', color='blue')
@@ -105,7 +105,7 @@ def plot_isotope_chart_of_activity(
 
     y_vals, x_vals, c_vals, l_vals = zip(*xycl)
 
-    fig = create_base_plot(title=title, ytitle='Protons', xtitle='Neutrons')
+    fig = create_base_plot(title=title, ytitle="Protons", xtitle="Neutrons")
     fig = add_stables(fig)
     fig = add_key(fig)
 

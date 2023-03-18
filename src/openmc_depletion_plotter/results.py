@@ -29,20 +29,17 @@ def plot_activity_vs_time(
     units="Bq/g",
     threshold=None,
     include_total=True,
-    material_index=0, # zero index is first depletable material in problem
-    path='materials.xml'
+    material_index=0,  # zero index is first depletable material in problem
+    path="materials.xml",
 ):
 
     time_steps = self.get_times(time_units=time_units)
 
     all_materials = []
     for counter, step in enumerate(time_steps):
-        materials = self.export_to_materials(
-            burnup_index=counter,
-            path=path
-        )[
+        materials = self.export_to_materials(burnup_index=counter, path=path)[
             material_index
-        ]  
+        ]
         all_materials.append(materials)
 
     most_active = find_most_active_nuclides_in_materials(
@@ -67,7 +64,7 @@ def plot_activity_vs_time(
             y_title=f"Activity [{units}]",
             title=title,
             x_scale=x_scale,
-            y_scale=y_scale
+            y_scale=y_scale,
         )
 
         if threshold:
@@ -85,6 +82,8 @@ def plot_activity_vs_time(
         plt.xlabel(x_axis_title)
         plt.ylabel(f"Activity [{units}]")
         plt.title(title)
+        plt.yscale(y_scale)
+        plt.xscale(x_scale)
     else:
         msg = 'only "plotly" and "matplotlib" plotting_backend are supported. {plotting_backend} is not an option'
         raise ValueError(msg)
@@ -118,7 +117,12 @@ def plot_activity_vs_time(
                 )
             )
         else:
-            print("include_total not supported for this plotting_backend")
+
+            y=find_total_activity_in_materials(
+                materials=all_materials, units=units, exclude=excluded_material
+            )
+            plt.plot(time_steps, y, 'k--', label='total')
+
 
     for name, value in horizontal_lines:
         if plotting_backend == "plotly":
@@ -135,7 +139,7 @@ def plot_activity_vs_time(
     if plotting_backend == "plotly":
         return figure
     else:
-        plt.legend(bbox_to_anchor=(1.25, 1.))
+        plt.legend(bbox_to_anchor=(1.25, 1.0))
         plt.tight_layout()
         return plt
 
@@ -152,18 +156,15 @@ def plot_atoms_vs_time(
     plotting_backend="plotly",
     threshold=None,
     title="Number of of nuclides in material",
-    material_index=0, # zero index as one material in problem
-    path='materials.xml'
+    material_index=0,  # zero index as one material in problem
+    path="materials.xml",
 ):
 
     time_steps = self.get_times(time_units=time_units)
 
     all_materials = []
     for counter, step in enumerate(time_steps):
-        materials = self.export_to_materials(
-            burnup_index=counter,
-            path=path
-        )[
+        materials = self.export_to_materials(burnup_index=counter, path=path)[
             material_index
         ]
         all_materials.append(materials)
@@ -189,7 +190,7 @@ def plot_atoms_vs_time(
             y_title=f"Number of atoms",
             title=title,
             x_scale=x_scale,
-            y_scale=y_scale
+            y_scale=y_scale,
         )
 
         if threshold:
@@ -232,7 +233,9 @@ def plot_atoms_vs_time(
             plt.plot(time_steps, value, label=key)
 
     if include_total:
-        total = find_total_nuclides_in_materials(all_materials, exclude=excluded_material)
+        total = find_total_nuclides_in_materials(
+            all_materials, exclude=excluded_material
+        )
         if plotting_backend == "plotly":
             figure.add_trace(
                 go.Scatter(
@@ -244,12 +247,13 @@ def plot_atoms_vs_time(
                 )
             )
         else:
-            print("include_total not supported for this plotting_backend")
+
+            plt.plot(time_steps, total, 'k--', label='total')
 
     if plotting_backend == "plotly":
         return figure
     else:
-        plt.legend(bbox_to_anchor=(1.25, 1.))
+        plt.legend(bbox_to_anchor=(1.25, 1.0))
         plt.tight_layout()
         return plt
 

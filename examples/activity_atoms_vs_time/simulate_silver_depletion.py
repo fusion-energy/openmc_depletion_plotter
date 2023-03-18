@@ -64,7 +64,10 @@ timesteps_and_source_rates = [
     (24, 1e20),
     (24, 1e20),
     (24, 1e20),
-    (24, 1e20),  # should saturate Ag110 here as it has been irradiated for over 5 halflives
+    (
+        24,
+        1e20,
+    ),  # should saturate Ag110 here as it has been irradiated for over 5 halflives
     (24, 1e20),
     (24, 1e20),
     (24, 1e20),

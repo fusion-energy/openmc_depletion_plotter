@@ -50,7 +50,7 @@ def header():
 
             📧 Email feedback to mail@jshimwell.com
 
-            🔗 This package forms part of a more [comprehensive openmc plotting](https://github.com/fusion-energy/openmc_plot) package where geometry, tallies, slices, etc can be plotted and is hosted on [xsplot.com](https://www.xsplot.com/) .
+            🔗 This package forms part of a more [comprehensive openmc plot](https://github.com/fusion-energy/openmc_plot) package where geometry, tallies, slices, etc can be plotted and is hosted on [xsplot.com](https://www.xsplot.com/) .
         """
     )
     st.write("<br>", unsafe_allow_html=True)
@@ -59,29 +59,28 @@ def header():
 def main():
     header()
 
-    
     st.write(
         """
-            👉 Carry out an OpenMC depletion simulation to generate ```depletion_results.h5``` file.
-
+            👉 Carry out an OpenMC depletion simulation to generate ```depletion_results.h5``` file and ```maerials.xml``` file.
 
         """
-            # Not got a h5 file handy, right mouse 🖱️ click and save these links 
-            # [ example 1 ](https://fusion-energy.github.io/openmc_depletion_plottter/examples/csg_tokamak/geometry.xml),
-            # [ example 2 ](https://fusion-energy.github.io/openmc_depletion_plottter/examples/csg_cylinder_box/geometry.xml)
+        # Not got a h5 file handy, right mouse 🖱️ click and save these links
+        # [ example 1 ](https://fusion-energy.github.io/openmc_depletion_plottter/examples/csg_tokamak/geometry.xml),
+        # [ example 2 ](https://fusion-energy.github.io/openmc_depletion_plottter/examples/csg_cylinder_box/geometry.xml)
     )
 
+    depletion_file = st.file_uploader(
+        "Select your depletion results h5 file", type=["h5"]
+    )
+    materials_file = st.file_uploader("Select your materials.xml file", type=["xml"])
 
-    depletion_file = st.file_uploader("Upload your depletion results h5 file", type=["h5"])
-    materials_file = st.file_uploader("Upload your materials.xml file", type=["xml"])
-
-    results= None
+    results = None
 
     if depletion_file is None:
-        new_title = '<center><p style="font-family:sans-serif; color:Red; font-size: 30px;">Upload your depletion results h5 file</p></center>'
+        new_title = '<center><p style="font-family:sans-serif; color:Red; font-size: 30px;">Select your depletion results h5 file</p></center>'
         st.markdown(new_title, unsafe_allow_html=True)
     if materials_file is None:
-        new_title = '<center><p style="font-family:sans-serif; color:Red; font-size: 30px;">Upload your materials.xml file</p></center>'
+        new_title = '<center><p style="font-family:sans-serif; color:Red; font-size: 30px;">Select your materials.xml file</p></center>'
         st.markdown(new_title, unsafe_allow_html=True)
 
     if depletion_file is not None and materials_file is not None:
@@ -91,11 +90,10 @@ def main():
         results = openmc.deplete.Results.from_hdf5(depletion_file.name)
         all_pristine_mats = openmc.Materials().from_xml(materials_file.name)
         number_of_depleted_materials = results[0].n_mat
-        
 
     if results:
         print("results is set to something so attempting to plot")
-        
+
         acitivity_or_atoms = st.sidebar.selectbox(
             label="Plot",
             options=("activity", "number of atoms"),
@@ -131,7 +129,7 @@ def main():
             key="y_scale",
             help="The axis scale to use for the Y axis",
         )
-        
+
         show_top = st.sidebar.number_input(
             value=10,
             label="Show top",
@@ -139,15 +137,15 @@ def main():
             help=f"The maximum number of nuclides to plot starting with the largest {acitivity_or_atoms}",
         )
 
-        if acitivity_or_atoms=='activity':
+        if acitivity_or_atoms == "activity":
             activity_units = st.sidebar.selectbox(
                 label="Activity units",
-                options=('Bq', 'Bq/g', 'Bq/cm3'),
+                options=("Bq", "Bq/g", "Bq/cm3"),
                 index=0,
                 key="activity_units",
                 help="",
             )
-            #todo horizontal_lines
+            # todo horizontal_lines
 
         if number_of_depleted_materials == 1:
             material_index = 0
@@ -159,7 +157,7 @@ def main():
                 help="",
             )
         else:
-            raise ValueError('there are no depleted materials in the first time step')
+            raise ValueError("there are no depleted materials in the first time step")
         # bug with threshold as it cuts too much
         # threshold = st.sidebar.number_input(
         #     value=0.,
@@ -168,15 +166,23 @@ def main():
         #     help="",
         # )
 
-        include_total = st.sidebar.radio('Include total', options=(True, False), help='Add a line to the plot showing the total (or sum) of all other lines.')
-        excluded_material = st.sidebar.radio('Exclude nuclides from undepleted material', options=(True, False), help='Allows nuclides in the orginal material to be excluded so that the nuclides created during depletion can be clearly shown.')
+        include_total = st.sidebar.radio(
+            "Include total",
+            options=(True, False),
+            help="Add a line to the plot showing the total (or sum) of all other lines.",
+        )
+        excluded_material = st.sidebar.radio(
+            "Exclude nuclides from undepleted material",
+            options=(True, False),
+            help="Allows nuclides in the orginal material to be excluded so that the nuclides created during depletion can be clearly shown.",
+        )
 
         if excluded_material:
             material_to_exclude = all_pristine_mats[material_index]
         else:
             material_to_exclude = None
 
-        if acitivity_or_atoms=='activity':
+        if acitivity_or_atoms == "activity":
             plot = results.plot_activity_vs_time(
                 # todo allow no materials to be excluded
                 excluded_material=material_to_exclude,
@@ -193,7 +199,7 @@ def main():
                 # threshold
                 material_index=material_index,
                 include_total=include_total,
-                path=materials_file.name
+                path=materials_file.name,
             )
         else:
             plot = results.plot_atoms_vs_time(
@@ -216,8 +222,9 @@ def main():
             st.pyplot(plot)
         else:
             # remove log line selector
-            plot.layout['updatemenus']=[]
+            plot.layout["updatemenus"] = []
             st.plotly_chart(plot)
+
 
 if __name__ == "__main__":
     main()
