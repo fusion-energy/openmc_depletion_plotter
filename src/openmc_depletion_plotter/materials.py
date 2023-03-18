@@ -18,8 +18,8 @@ def plot_isotope_chart_of_atoms(self, show_all=True, title="Numbers of nuclides"
     xycl = get_atoms_from_material(self)
 
     y_vals, x_vals, c_vals, l_vals = zip(*xycl)
-
-    fig = create_base_plot(title=title, ytitle="Protons", xtitle="Neutrons")
+    
+    fig = create_base_plot(title=title, y_title="Protons", x_title="Neutrons")
     fig = add_stables(fig)
     fig = add_key(fig)
     # fig = add_key(fig, key_name='nuclide present in material', color='blue')
