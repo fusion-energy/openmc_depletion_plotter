@@ -21,6 +21,7 @@ dependencies = [
     "pint",
     "plotly",
     "numpy",
+    "streamlit",
     "matplotlib",
     "kaleido",
 ]
@@ -35,6 +36,9 @@ write_to = "src/openmc_depletion_plotter/_version.py"
 tests = [
     "pytest"
 ]
+
+[project.scripts]
+openmc_depletion_plotter = "openmc_depletion_plotter.launch:main"
 
 [project.urls]
 "Homepage" = "https://github.com/fusion-energy/openmc_depletion_plotter"

@@ -22,7 +22,7 @@ plot = results.plot_activity_vs_time(
     time_units="s",
     units="Bq/g",
     plotting_backend="matplotlib",
-    show_top=2  # only Ag108 and Ag110 will be shown
+    show_top=2,  # only Ag108 and Ag110 will be shown
 )
 # plot.show()
 plot.savefig("activity_vs_time_silver_activation.png")
