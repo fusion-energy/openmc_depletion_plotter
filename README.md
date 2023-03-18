@@ -2,14 +2,33 @@
 
 [![CI](https://github.com/fusion-energy/openmc_depletion_plotter/actions/workflows/ci.yml/badge.svg)](https://github.com/fusion-energy/openmc_depletion_plotter/actions/workflows/ci.yml)
 
-Extends OpenMC to provides convienent plotting methods.
+Extends OpenMC to provides convenient plotting methods.
 This is done by Monkey Patching OpenMC to provide additional functionality to the base classes.
 One benefit of this is the user can continue to work with the familiar OpenMC classes and they simply get additional functionality.
 Another benefit is that if any of these functions ever become popular enough to include in OpenMC then it could be done with a simple copy paste into the existing class structure.
 Plotly figures or MatPlotLib figures are returned for user customization.
 
 
-:point_right: [Examples](https://github.com/fusion-energy/openmc_depletion_plotter/tree/main/examples)
+:point_right: [API Examples](https://github.com/fusion-energy/openmc_depletion_plotter/tree/main/examples)
+
+# Install
+
+The openmc_depletion_plotter package can be installed from PyPi with the terminal command.
+
+```bash
+pip install openmc_depletion_plotter
+```
+
+# Graphical User Interface
+
+Once installed you can then used the API or launch the GUI.
+To launch the GUI type the following command in the terminal and the browser should open with the GUI.
+
+```
+openmc_depletion_plotter
+```
+
+![openmc depletion plotter](https://user-images.githubusercontent.com/8583900/226143434-0f3d077c-1403-4efe-8318-7fc10ff00fca.gif)
 
 # Plotting pulse schedule
 
