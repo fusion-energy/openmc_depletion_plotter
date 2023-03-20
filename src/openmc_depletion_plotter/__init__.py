@@ -36,3 +36,4 @@ from .utils import add_scale_buttons
 from .materials import *
 from .integrators import *
 from .results import *
+from .app import *

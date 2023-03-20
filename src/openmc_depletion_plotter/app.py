@@ -1,12 +1,5 @@
-import xml.etree.ElementTree as ET
-from pathlib import Path
-import plotly.graph_objects as go
-import matplotlib.pyplot as plt
 import openmc
 import streamlit as st
-from matplotlib import colors
-from pylab import cm, colormaps  # *
-import numpy as np
 
 import openmc_depletion_plotter  # adds extra functions to openmc.Results and other classes
 
@@ -53,11 +46,11 @@ def header():
             🔗 This package forms part of a more [comprehensive openmc plot](https://github.com/fusion-energy/openmc_plot) package where geometry, tallies, slices, etc can be plotted and is hosted on [xsplot.com](https://www.xsplot.com/) .
         """
     )
+
     st.write("<br>", unsafe_allow_html=True)
 
 
 def main():
-    header()
 
     st.write(
         """
@@ -94,13 +87,14 @@ def main():
     if results:
         print("results is set to something so attempting to plot")
 
-        acitivity_or_atoms = st.sidebar.selectbox(
+        activity_or_atoms = st.sidebar.selectbox(
             label="Plot",
             options=("activity", "number of atoms"),
             index=0,
-            key="acitivity_or_atoms",
+            key="activity_or_atoms",
             help="",
         )
+
         backend = st.sidebar.selectbox(
             label="Ploting backend",
             options=("matplotlib", "plotly"),
@@ -108,6 +102,7 @@ def main():
             key="geometry_ploting_backend",
             help="Create png images with MatPlotLib or HTML plots with Plotly",
         )
+
         time_units = st.sidebar.selectbox(
             label="Time units",
             options=("s", "min", "h", "d", "a"),
@@ -115,6 +110,7 @@ def main():
             key="time_units",
             help="The time units to use on the Y aixs, seconds minutes, hours, days or years",
         )
+
         x_scale = st.sidebar.selectbox(
             label="X scale",
             options=("linear", "log"),
@@ -122,6 +118,7 @@ def main():
             key="x_scale",
             help="The axis scale to use for the X axis",
         )
+
         y_scale = st.sidebar.selectbox(
             label="Y scale",
             options=("linear", "log"),
@@ -134,10 +131,10 @@ def main():
             value=10,
             label="Show top",
             key="show_top",
-            help=f"The maximum number of nuclides to plot starting with the largest {acitivity_or_atoms}",
+            help=f"The maximum number of nuclides to plot starting with the largest {activity_or_atoms}",
         )
 
-        if acitivity_or_atoms == "activity":
+        if activity_or_atoms == "activity":
             activity_units = st.sidebar.selectbox(
                 label="Activity units",
                 options=("Bq", "Bq/g", "Bq/cm3"),
@@ -182,7 +179,7 @@ def main():
         else:
             material_to_exclude = None
 
-        if acitivity_or_atoms == "activity":
+        if activity_or_atoms == "activity":
             plot = results.plot_activity_vs_time(
                 # todo allow no materials to be excluded
                 excluded_material=material_to_exclude,
@@ -227,4 +224,5 @@ def main():
 
 
 if __name__ == "__main__":
+    header()
     main()
