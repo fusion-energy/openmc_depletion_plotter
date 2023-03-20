@@ -96,10 +96,10 @@ def main():
         )
 
         backend = st.sidebar.selectbox(
-            label="Ploting backend",
+            label="Plotting backend",
             options=("matplotlib", "plotly"),
             index=0,
-            key="geometry_ploting_backend",
+            key="geometry_plotting_backend",
             help="Create png images with MatPlotLib or HTML plots with Plotly",
         )
 
@@ -108,7 +108,7 @@ def main():
             options=("s", "min", "h", "d", "a"),
             index=0,
             key="time_units",
-            help="The time units to use on the Y aixs, seconds minutes, hours, days or years",
+            help="The time units to use on the Y axis, seconds minutes, hours, days or years",
         )
 
         x_scale = st.sidebar.selectbox(
@@ -154,7 +154,9 @@ def main():
                 help="",
             )
         else:
-            raise ValueError("there are no depleted materials in the first time step")
+            raise ValueError(
+                "There are no depleted materials in the first time step"
+            )
         # bug with threshold as it cuts too much
         # threshold = st.sidebar.number_input(
         #     value=0.,
@@ -168,6 +170,7 @@ def main():
             options=(True, False),
             help="Add a line to the plot showing the total (or sum) of all other lines.",
         )
+
         excluded_material = st.sidebar.radio(
             "Exclude nuclides from undepleted material",
             options=(True, False),
@@ -198,7 +201,7 @@ def main():
                 include_total=include_total,
                 path=materials_file.name,
             )
-        else:
+        elif activity_or_atoms == "number of atoms":
             plot = results.plot_atoms_vs_time(
                 # todo allow no materials to be excluded
                 excluded_material=material_to_exclude,
@@ -214,6 +217,11 @@ def main():
                 material_index=material_index
                 # threshold=threshold # looks like there is a bug with threshold
             )
+        else:
+            raise ValueError(
+                'activity_or_atoms must be either "activity" or "number of atoms" to plot'
+            )
+
 
         if backend == "matplotlib":
             st.pyplot(plot)
