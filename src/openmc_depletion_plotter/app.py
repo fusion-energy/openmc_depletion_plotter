@@ -54,7 +54,7 @@ def main():
 
     st.write(
         """
-            👉 Carry out an OpenMC depletion simulation to generate ```depletion_results.h5``` file and ```maerials.xml``` file.
+            👉 Carry out an OpenMC depletion simulation to generate ```depletion_results.h5``` file and ```materials.xml``` file.
 
         """
         # Not got a h5 file handy, right mouse 🖱️ click and save these links
