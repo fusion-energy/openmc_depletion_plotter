@@ -70,7 +70,9 @@ def plot_activity_vs_time(
         if threshold:
             total = (
                 find_total_activity_in_materials(
-                    materials=all_materials, units=units, exclude=excluded_material
+                    materials=all_materials,
+                    units=units,
+                    exclude=excluded_material
                 ),
             )
             figure.update_layout(yaxis_range=[threshold, max(total)])
@@ -122,7 +124,6 @@ def plot_activity_vs_time(
                 materials=all_materials, units=units, exclude=excluded_material
             )
             plt.plot(time_steps, y, 'k--', label='total')
-
 
     for name, value in horizontal_lines:
         if plotting_backend == "plotly":
