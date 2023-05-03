@@ -2,7 +2,7 @@ from openmc_depletion_plotter import find_most_abundant_nuclides_in_material
 from openmc_depletion_plotter import find_most_abundant_nuclides_in_materials
 from openmc_depletion_plotter import find_most_active_nuclides_in_material
 from openmc_depletion_plotter import find_most_active_nuclides_in_materials
-from openmc_depletion_plotter import get_nuclide_atom_densities_from_materials
+from openmc_depletion_plotter import get_nuclide_atoms_from_materials
 import openmc
 
 
@@ -64,10 +64,12 @@ def test_two_identical_materials():
     my_mat = openmc.Material()
     my_mat.add_nuclide("Li6", 1)
     my_mat.add_nuclide("Li7", 0.5)
+    my_mat.volume = 1
 
     my_mat_2 = openmc.Material()
     my_mat_2.add_nuclide("Li6", 1)
     my_mat_2.add_nuclide("Li7", 0.5)
+    my_mat_2.volume = 1
 
     nucs = find_most_abundant_nuclides_in_materials(
         materials=[my_mat, my_mat_2],
@@ -81,10 +83,12 @@ def test_two_similar_materials():
     my_mat = openmc.Material()
     my_mat.add_nuclide("Li6", 0.5)
     my_mat.add_nuclide("Li7", 0.5)
+    my_mat.volume = 1
 
     my_mat_2 = openmc.Material()
     my_mat_2.add_nuclide("Li6", 0.6)
     my_mat_2.add_nuclide("Li7", 0.7)
+    my_mat_2.volume = 1
 
     nucs = find_most_abundant_nuclides_in_materials(
         materials=[my_mat, my_mat_2],
@@ -98,10 +102,12 @@ def test_openmc_material():
     my_mat = openmc.Material()
     my_mat.add_nuclide("Li6", 0.5)
     my_mat.add_nuclide("Li7", 0.5)
+    my_mat.volume = 1
 
     my_mat_2 = openmc.Material()
     my_mat_2.add_nuclide("Fe56", 0.6)
     my_mat_2.add_nuclide("Be9", 0.6)
+    my_mat_2.volume = 1
 
     nucs = find_most_abundant_nuclides_in_materials(
         materials=[my_mat, my_mat_2], exclude=my_mat
@@ -115,10 +121,12 @@ def test_openmc_material_shared_isotope():
     my_mat = openmc.Material()
     my_mat.add_nuclide("Li6", 0.5)
     my_mat.add_nuclide("Li7", 0.5)
+    my_mat.volume = 1
 
     my_mat_2 = openmc.Material()
     my_mat_2.add_nuclide("Fe56", 0.6)
     my_mat_2.add_nuclide("Li7", 0.6)
+    my_mat_2.volume = 1
 
     nucs = find_most_abundant_nuclides_in_materials(
         materials=[my_mat, my_mat_2], exclude=my_mat
@@ -127,17 +135,19 @@ def test_openmc_material_shared_isotope():
     assert nucs == ["Fe56"]
 
 
-def test_get_nuclide_atom_densities_from_materials():
+def test_get_nuclide_atoms_from_materials():
 
     my_mat = openmc.Material()
     my_mat.add_nuclide("Li6", 0.5)
     my_mat.add_nuclide("Li7", 0.5)
+    my_mat.volume = 1
 
     my_mat_2 = openmc.Material()
     my_mat_2.add_nuclide("Fe56", 0.6)
     my_mat_2.add_nuclide("Li7", 0.6)
+    my_mat_2.volume = 1
 
-    nucs = get_nuclide_atom_densities_from_materials(
+    nucs = get_nuclide_atoms_from_materials(
         nuclides=["Li6", "Fe56"], materials=[my_mat, my_mat_2]
     )
 

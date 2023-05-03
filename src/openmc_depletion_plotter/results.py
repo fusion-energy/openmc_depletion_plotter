@@ -7,7 +7,7 @@ from .utils import get_nuclide_activities_from_materials
 from .utils import find_total_activity_in_materials
 from .utils import stable_nuclides
 from .utils import create_base_plot
-from .utils import get_nuclide_atom_densities_from_materials
+from .utils import get_nuclide_atoms_from_materials
 from .utils import find_most_abundant_nuclides_in_materials
 from .utils import find_total_nuclides_in_materials
 import plotly.graph_objects as go
@@ -184,7 +184,7 @@ def plot_atoms_vs_time(
     else:
         nuclides = most_abundant
 
-    all_nuclides_with_atoms = get_nuclide_atom_densities_from_materials(
+    all_nuclides_with_atoms = get_nuclide_atoms_from_materials(
         nuclides=nuclides, materials=all_materials
     )
 
