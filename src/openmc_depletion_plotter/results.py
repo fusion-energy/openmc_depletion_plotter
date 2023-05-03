@@ -14,6 +14,12 @@ import plotly.graph_objects as go
 import numpy as np
 import matplotlib.pyplot as plt
 
+lots_of_nuclides = []
+elements = list(openmc.data.ATOMIC_SYMBOL.values())
+for el in elements:
+    for atomic_num in range(1, 1000):
+        lots_of_nuclides.append(f'{el}{atomic_num}')
+
 
 def plot_activity_vs_time(
     self,
@@ -37,7 +43,7 @@ def plot_activity_vs_time(
 
     all_materials = []
     for counter, step in enumerate(time_steps):
-        materials = self.export_to_materials(burnup_index=counter, path=path)[
+        materials = self.export_to_materials(nuc_with_data=lots_of_nuclides,burnup_index=counter, path=path)[
             material_index
         ]
         all_materials.append(materials)
@@ -165,7 +171,7 @@ def plot_atoms_vs_time(
 
     all_materials = []
     for counter, step in enumerate(time_steps):
-        materials = self.export_to_materials(burnup_index=counter, path=path)[
+        materials = self.export_to_materials(nuc_with_data=lots_of_nuclides,burnup_index=counter, path=path)[
             material_index
         ]
         all_materials.append(materials)
