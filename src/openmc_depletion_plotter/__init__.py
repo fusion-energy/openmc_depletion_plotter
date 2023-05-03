@@ -21,7 +21,7 @@ __all__ = ["__version__"]
 from .utils import get_atoms_activity_from_material
 from .utils import find_most_abundant_nuclides_in_material
 from .utils import find_most_abundant_nuclides_in_materials
-from .utils import get_nuclide_atom_densities_from_materials
+from .utils import get_nuclide_atoms_from_materials
 from .utils import find_most_active_nuclides_in_material
 from .utils import find_most_active_nuclides_in_materials
 from .utils import get_nuclide_activities_from_materials
