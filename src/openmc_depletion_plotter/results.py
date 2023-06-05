@@ -337,25 +337,26 @@ def plot_decay_heat_vs_time(
         raise ValueError(msg)
 
     for key, value in all_nuclides_with_decay_heat.items():
-        if threshold:
-            value = np.array(value)
-            value[value < threshold] = np.nan
-        if key in stable_nuclides:
-            name = key + " stable"
-        else:
-            name = key
-        if plotting_backend == "plotly":
-            figure.add_trace(
-                go.Scatter(
-                    mode="lines",
-                    x=time_steps,
-                    y=value,
-                    name=name,
-                    # line=dict(shape="hv", width=0),
+        if sum(value) != 0:
+            if threshold:
+                value = np.array(value)
+                value[value < threshold] = np.nan
+            if key in stable_nuclides:
+                name = key + " stable"
+            else:
+                name = key
+            if plotting_backend == "plotly":
+                figure.add_trace(
+                    go.Scatter(
+                        mode="lines",
+                        x=time_steps,
+                        y=value,
+                        name=name,
+                        # line=dict(shape="hv", width=0),
+                    )
                 )
-            )
-        else:
-            plt.plot(time_steps, value, label=key)
+            else:
+                plt.plot(time_steps, value, label=key)
 
     # todo
     if include_total:
@@ -384,7 +385,7 @@ def plot_decay_heat_vs_time(
     else:
         plt.legend(bbox_to_anchor=(1.25, 1.0))
         plt.tight_layout()
-        return plt 
+        return plt
 
 
 openmc.deplete.Results.plot_activity_vs_time = plot_activity_vs_time

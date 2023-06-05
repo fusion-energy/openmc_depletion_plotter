@@ -3,12 +3,17 @@ import openmc_depletion_plotter
 import openmc.deplete
 import math
 
-
+# based on CoNDERC data
+# https://www-nds.iaea.org/conderc/fusion/element/SS304
 
 # makes a simple material from Silver
 my_material = openmc.Material() 
-my_material.add_element('Fe', 1, percent_type='ao')
-my_material.set_density('g/cm3', 10.49)
+my_material.add_element('Cr', 18.02, percent_type='ao')
+my_material.add_element('Mn', 1.44, percent_type='ao')
+my_material.add_element('Ni', 8.82, percent_type='ao')
+my_material.add_element('Si', 0.55, percent_type='ao')
+my_material.add_element('Fe', 71.17, percent_type='ao')
+my_material.set_density('g/cm3', 7.9)
 
 sphere_radius = 100
 volume_of_sphere = (4/3) * math.pi * math.pow(sphere_radius, 3)
@@ -60,29 +65,29 @@ operator = openmc.deplete.CoupledOperator(
 
 # We define timesteps together with the source rate to make it clearer
 timesteps_and_source_rates = [
-    (5*60, 1e20),
+    (5*60, 1.116E+10),
     (35, 0),
-    (15, 0),
-    (15, 0),
     (16, 0),
     (15, 0),
-    (26, 0),
+    (15, 0),
+    (15, 0),
+    (27, 0),
     (36, 0),
     (36, 0),
     (52, 0),
-    (66, 0),
     (67, 0),
-    (97, 0),
+    (66, 0),
+    (98, 0),
+    (126, 0),
     (123, 0),
-    (123, 0),
-    (184, 0),
-    (246, 0),
+    (185, 0),
+    (243, 0),
     (247, 0),
     (246, 0),
-    (427, 0),
-    (607, 0),
+    (425, 0),
     (606, 0),
-]
+    (607, 0),
+]  # 2020 5 min
 
 # Uses list Python comprehension to get the timesteps and source_rates separately
 timesteps = [item[0] for item in timesteps_and_source_rates]
@@ -92,7 +97,7 @@ integrator = openmc.deplete.PredictorIntegrator(
     operator=operator,
     timesteps=timesteps,
     source_rates=source_rates,
-    timestep_units = 's'
+    timestep_units='s'
 )
 
 integrator.integrate()
@@ -102,6 +107,9 @@ results = openmc.deplete.ResultsList.from_hdf5("depletion_results.h5")
 plot = results.plot_decay_heat_vs_time(
     x_scale='log',
     y_scale='log',
-    excluded_material=my_material
+    excluded_material=my_material,
+    show_top=10
 )
 plot.show()
+
+plot.write_html('decay_heat_from_ss304.html')
