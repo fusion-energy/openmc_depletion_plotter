@@ -312,6 +312,24 @@ def find_most_abundant_nuclides_in_materials(
     return list(sorted_dict.keys())
 
 
+def get_decay_heat_from_materials(nuclides, materials, units):
+    all_nuclides_with_decay_heat = {}
+    for isotope in nuclides:
+        all_quants = []
+        for material in materials:
+            quants = material.get_decay_heat(
+                units=units,
+                by_nuclide=True
+            )
+            if isotope in quants.keys():
+                quant = quants[isotope]
+            else:
+                quant = 0.0
+            all_quants.append(quant)
+        all_nuclides_with_decay_heat[isotope] = all_quants
+    return all_nuclides_with_decay_heat
+
+
 def get_nuclide_atoms_from_materials(nuclides, materials):
     all_nuclides_with_atoms = {}
     for isotope in nuclides:
@@ -332,7 +350,10 @@ def get_nuclide_activities_from_materials(nuclides, materials, units):
     for isotope in nuclides:
         all_quants = []
         for material in materials:
-            quants = material.get_activity(by_nuclide=True, units=units)  # units in Bq
+            quants = material.get_activity(
+                by_nuclide=True,  # units in Bq
+                units=units
+            )
             if isotope in quants.keys():
                 quant = quants[isotope]
             else:
