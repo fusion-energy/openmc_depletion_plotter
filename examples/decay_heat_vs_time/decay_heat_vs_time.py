@@ -6,13 +6,14 @@ import math
 # based on CoNDERC data
 # https://www-nds.iaea.org/conderc/fusion/element/SS304
 
-# makes a simple material from Silver
-my_material = openmc.Material() 
-my_material.add_element('Cr', 18.02, percent_type='ao')
-my_material.add_element('Mn', 1.44, percent_type='ao')
-my_material.add_element('Ni', 8.82, percent_type='ao')
-my_material.add_element('Si', 0.55, percent_type='ao')
-my_material.add_element('Fe', 71.17, percent_type='ao')
+# makes a simple material
+my_material = openmc.Material()
+# my_material.add_element('Cr', 18.02, percent_type='ao')
+# my_material.add_element('Mn', 1.44, percent_type='ao')
+# my_material.add_element('Ni', 8.82, percent_type='ao')
+# my_material.add_element('Si', 0.55, percent_type='ao')
+# my_material.add_element('Fe', 71.17, percent_type='ao')
+my_material.add_nuclide('Fe56', 71.17, percent_type='ao')
 my_material.set_density('g/cm3', 7.9)
 
 sphere_radius = 100
