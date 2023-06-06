@@ -3,7 +3,10 @@ import openmc_depletion_plotter
 import plotly
 import openmc.deplete
 import math
+from pathlib import Path
 
+openmc.config['cross_sections'] = Path(__file__).parent / 'cross_sections.xml'
+openmc.config['chain_file'] = Path(__file__).parent / 'chain-nndc-b7.1.xml'
 
 #TODO plot
 # openmc.deplete.PredictorIntegrator plot_pulse_schedule
@@ -13,8 +16,8 @@ import math
 
 def test_default_isotope_charts():
     my_mat = openmc.Material()
-    my_mat.add_element("Fe", 1)
-    my_mat.add_nuclide("Co60", 1)
+    my_mat.add_nuclide("Fe56", 1)
+    my_mat.add_nuclide("H1", 1)
     my_mat.set_density('g/cm3', 1)
     my_mat.volume = 1
 
@@ -27,9 +30,9 @@ def test_default_isotope_charts():
 
 def test_default_time_plots():
 
-    # makes a simple material from Silver
+    # makes a simple material
     my_material = openmc.Material() 
-    my_material.add_element('Ag', 1, percent_type='ao')
+    my_material.add_nuclide('Fe56', 1, percent_type='ao')
     my_material.set_density('g/cm3', 10.49)
 
     sphere_radius = 100

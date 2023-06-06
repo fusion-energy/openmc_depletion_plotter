@@ -5,7 +5,10 @@ from openmc_depletion_plotter import find_most_active_nuclides_in_materials
 from openmc_depletion_plotter import get_nuclide_atoms_from_materials
 from openmc_depletion_plotter import get_decay_heat_from_materials
 import openmc
+from pathlib import Path
 
+openmc.config['cross_sections'] = Path(__file__).parent / 'cross_sections.xml'
+openmc.config['chain_file'] = Path(__file__).parent / 'chain-nndc-b7.1.xml'
 
 def test_find_nuclides_iron():
 
