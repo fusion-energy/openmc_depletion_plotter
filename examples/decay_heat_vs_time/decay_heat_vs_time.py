@@ -1,18 +1,18 @@
+
+# based on CoNDERC data
+# https://www-nds.iaea.org/conderc/fusion/element/SS304
 import openmc
 import openmc_depletion_plotter
 import openmc.deplete
 import math
+from pathlib import Path
 
-# based on CoNDERC data
-# https://www-nds.iaea.org/conderc/fusion/element/SS304
+# these should be set to where you have the chain and cross section file saved
+openmc.config['cross_sections'] = '/home/jshimwell/openmc_depletion_plotter/tests/cross_sections.xml'
+openmc.config['chain_file'] = '/home/jshimwell/openmc_depletion_plotter/tests/chain-nndc-b7.1.xml'
 
 # makes a simple material
 my_material = openmc.Material()
-# my_material.add_element('Cr', 18.02, percent_type='ao')
-# my_material.add_element('Mn', 1.44, percent_type='ao')
-# my_material.add_element('Ni', 8.82, percent_type='ao')
-# my_material.add_element('Si', 0.55, percent_type='ao')
-# my_material.add_element('Fe', 71.17, percent_type='ao')
 my_material.add_nuclide('Fe56', 71.17, percent_type='ao')
 my_material.set_density('g/cm3', 7.9)
 
@@ -23,8 +23,6 @@ my_material.depletable = True  # depletable = True is needed to tell openmc to u
 
 materials = openmc.Materials([my_material])
 materials.export_to_xml()
-
-# GEOMETRY
 
 # surfaces
 sph1 = openmc.Sphere(r=sphere_radius, boundary_type='vacuum')
@@ -67,28 +65,10 @@ operator = openmc.deplete.CoupledOperator(
 # We define timesteps together with the source rate to make it clearer
 timesteps_and_source_rates = [
     (5*60, 1.116E+10),
-    (35, 0),
-    (16, 0),
-    (15, 0),
-    (15, 0),
-    (15, 0),
-    (27, 0),
-    (36, 0),
-    (36, 0),
-    (52, 0),
-    (67, 0),
-    (66, 0),
-    (98, 0),
-    (126, 0),
-    (123, 0),
-    (185, 0),
-    (243, 0),
-    (247, 0),
-    (246, 0),
-    (425, 0),
-    (606, 0),
-    (607, 0),
-]  # 2020 5 min
+    (5*60, 0),
+    (5*60, 0),
+    (5*60, 0),
+]
 
 # Uses list Python comprehension to get the timesteps and source_rates separately
 timesteps = [item[0] for item in timesteps_and_source_rates]
@@ -113,4 +93,4 @@ plot = results.plot_decay_heat_vs_time(
 )
 plot.show()
 
-plot.write_html('decay_heat_from_ss304.html')
+plot.write_html('decay_heat.html')
