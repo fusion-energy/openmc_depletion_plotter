@@ -5,8 +5,8 @@ import openmc.deplete
 import math
 from pathlib import Path
 
-openmc.config['cross_sections'] = Path(__file__).parent / 'cross_sections.xml'
-openmc.config['chain_file'] = Path(__file__).parent / 'chain-nndc-b7.1.xml'
+# openmc.config['cross_sections'] = Path(__file__).parent / 'cross_sections.xml'
+# openmc.config['chain_file'] = Path(__file__).parent / 'chain-nndc-b7.1.xml'
 
 #TODO plot
 # openmc.deplete.PredictorIntegrator plot_pulse_schedule
@@ -30,6 +30,22 @@ def test_default_isotope_charts():
 
 def test_default_time_plots():
 
+    my_material = openmc.Material() 
+    my_material.add_nuclide('Fe56', 1, percent_type='ao')
+    my_material.set_density('g/cm3', 10.49)
+
+    results = openmc.deplete.ResultsList.from_hdf5("tests/depletion_results.h5")
+
+    plot = results.plot_atoms_vs_time(excluded_material=my_material)
+    assert isinstance(plot, plotly.graph_objs._figure.Figure)
+
+    plot = results.plot_activity_vs_time()
+    assert isinstance(plot, plotly.graph_objs._figure.Figure)
+
+    plot = results.plot_decay_heat_vs_time()
+    assert isinstance(plot, plotly.graph_objs._figure.Figure)
+
+def produce_depletion_results_file():
     # makes a simple material
     my_material = openmc.Material() 
     my_material.add_nuclide('Fe56', 1, percent_type='ao')
@@ -101,14 +117,3 @@ def test_default_time_plots():
     )
 
     integrator.integrate()
-
-    results = openmc.deplete.ResultsList.from_hdf5("depletion_results.h5")
-
-    plot = results.plot_atoms_vs_time(excluded_material=my_material)
-    assert isinstance(plot, plotly.graph_objs._figure.Figure)
-
-    plot = results.plot_activity_vs_time()
-    assert isinstance(plot, plotly.graph_objs._figure.Figure)
-
-    plot = results.plot_decay_heat_vs_time()
-    assert isinstance(plot, plotly.graph_objs._figure.Figure)
