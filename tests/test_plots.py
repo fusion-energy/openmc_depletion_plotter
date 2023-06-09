@@ -14,6 +14,7 @@ from pathlib import Path
 # openmc.deplete.Results.plot_atoms_vs_time()
 # openmc.deplete.Results.plot_activity_vs_time()
 
+
 def test_default_isotope_charts():
     my_mat = openmc.Material()
     my_mat.add_nuclide("Fe56", 1)
@@ -36,14 +37,15 @@ def test_default_time_plots():
 
     results = openmc.deplete.ResultsList.from_hdf5("tests/depletion_results.h5")
 
-    plot = results.plot_atoms_vs_time(excluded_material=my_material)
+    plot = results.plot_atoms_vs_time(excluded_material=my_material, path='tests/materials.xml')
     assert isinstance(plot, plotly.graph_objs._figure.Figure)
 
-    plot = results.plot_activity_vs_time()
+    plot = results.plot_activity_vs_time(path='tests/materials.xml')
     assert isinstance(plot, plotly.graph_objs._figure.Figure)
 
-    plot = results.plot_decay_heat_vs_time()
+    plot = results.plot_decay_heat_vs_time(path='tests/materials.xml')
     assert isinstance(plot, plotly.graph_objs._figure.Figure)
+
 
 def produce_depletion_results_file():
     # makes a simple material
