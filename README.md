@@ -53,7 +53,7 @@ openmc.deplete.SILEQIIntegrator.plot_pulse_schedule()
 
 ![openmc pulse time plot](https://user-images.githubusercontent.com/8583900/188698064-9ffae002-844d-4cdf-aca2-b87d9a8f39b4.png)
 
-# Plotting activation or atoms as a function of time
+# Plotting activation, atoms, or decay heat as a function of time
 
 The ```openmc.deplete.Results()``` class has been extended to include a ```plot_atoms_vs_time()``` method and a ```plot_activity_vs_time``` method.
 
@@ -66,6 +66,7 @@ Additional methods provided
 ```python
 openmc.deplete.Results.plot_atoms_vs_time()
 openmc.deplete.Results.plot_activity_vs_time()
+openmc.deplete.Results.plot_decay_heat_vs_time()
 ```
 
 ![openmc matplotlib activity](https://user-images.githubusercontent.com/8583900/188697525-a156c538-1d67-4efe-b19d-f34850af8b1f.png)
