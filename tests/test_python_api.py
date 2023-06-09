@@ -3,8 +3,12 @@ from openmc_depletion_plotter import find_most_abundant_nuclides_in_materials
 from openmc_depletion_plotter import find_most_active_nuclides_in_material
 from openmc_depletion_plotter import find_most_active_nuclides_in_materials
 from openmc_depletion_plotter import get_nuclide_atoms_from_materials
+from openmc_depletion_plotter import get_decay_heat_from_materials
 import openmc
+from pathlib import Path
 
+openmc.config['cross_sections'] = Path(__file__).parent / 'cross_sections.xml'
+openmc.config['chain_file'] = Path(__file__).parent / 'chain-nndc-b7.1.xml'
 
 def test_find_nuclides_iron():
 
@@ -198,3 +202,72 @@ def test_find_most_active_nuclides_in_materials():
     assert find_most_active_nuclides_in_materials(
         materials=[my_mat, my_mat2], units="Bq/g"
     ) == ["U236", "U238"]
+
+
+def test_get_nuclide_atoms_from_materials():
+
+    my_mat = openmc.Material()
+    my_mat.add_nuclide("Mn57", 0.5)
+    my_mat.add_nuclide("Mn56", 0.5)
+    my_mat.add_nuclide("Fe53", 0.5)
+    my_mat.volume = 1
+
+    my_mat_2 = openmc.Material()
+    my_mat_2.add_nuclide("Mn57", 0.6)
+    my_mat_2.add_nuclide("Li7", 0.6)
+    my_mat_2.volume = 1
+
+    heat = get_decay_heat_from_materials(
+        nuclides=["Mn57"],
+        materials=[my_mat, my_mat_2],
+        units='W/g'
+    )
+
+    assert list(heat.keys()) == ['Mn57']
+    assert len(heat['Mn57']) == 2
+
+    # one isotope, one material
+    heat = get_decay_heat_from_materials(
+        nuclides=["Mn57"],
+        materials=[my_mat],
+        units='W/g'
+    )
+    assert list(heat.keys()) == ['Mn57']
+    assert len(heat['Mn57']) == 1
+    assert heat['Mn57'][0] != 0
+
+    # one isotope, two materials
+    heat = get_decay_heat_from_materials(
+        nuclides=["Mn57"],
+        materials=[my_mat, my_mat_2],
+        units='W/g'
+    )
+    assert list(heat.keys()) == ['Mn57']
+    assert len(heat['Mn57']) == 2
+    assert heat['Mn57'][0] != 0
+    assert heat['Mn57'][1] != 0
+
+    # two isotopes, one materials
+    heat = get_decay_heat_from_materials(
+        nuclides=["Mn57", "Mn56"],
+        materials=[my_mat],
+        units='W/g'
+    )
+    assert sorted(list(heat.keys())) == sorted(['Mn57', 'Mn56'])
+    assert len(heat['Mn57']) == 1
+    assert heat['Mn57'][0] != 0
+    assert heat['Mn56'][0] != 0
+
+    # two isotopes, two materials
+    heat = get_decay_heat_from_materials(
+        nuclides=["Mn57", "Mn56"],
+        materials=[my_mat, my_mat_2],
+        units='W/g'
+    )
+    assert sorted(list(heat.keys())) == sorted(['Mn57', 'Mn56'])
+    assert len(heat['Mn57']) == 2
+    assert len(heat['Mn56']) == 2
+    assert heat['Mn57'][0] != 0.
+    assert heat['Mn56'][0] != 0.
+    assert heat['Mn57'][1] != 0.
+    assert heat['Mn56'][1] == 0.  # Mn56 is not in 2nd material

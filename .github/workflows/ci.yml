@@ -44,3 +44,6 @@ jobs:
           # plot_isotope_charts_fisson_irradiation.py
 
           python examples/pulse_schedule/plot_pulse_schedule.py
+
+          # simulation requires more nuclear data that available on the CI
+          # python examples/decay_heat_vs_time/decay_heat_vs_time.py

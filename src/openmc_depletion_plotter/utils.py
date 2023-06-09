@@ -201,7 +201,7 @@ def find_total_activity_in_materials(
     materials,
     exclude=None,
 ):
-    non_excluded_nucs = []
+
     if exclude is None:
         excluded_isotopes = []
     else:
@@ -222,6 +222,34 @@ def find_total_activity_in_materials(
         materials_activities.append(material_activity)
 
     return materials_activities
+
+
+def find_total_decay_heat_in_materials(
+    units,
+    materials,
+    exclude=None,
+):
+
+    if exclude is None:
+        excluded_isotopes = []
+    else:
+        if isinstance(exclude, Iterable):
+            excluded_isotopes = exclude
+        elif isinstance(exclude, openmc.Material):
+            excluded_isotopes = exclude.get_nuclides()
+
+    materials_decay_heat = []
+    for material in materials:
+        material_activity = 0
+        heat = material.get_decay_heat(by_nuclide=True, units=units)
+
+        for key, value in heat.items():
+            if key not in excluded_isotopes:
+                material_activity += value
+
+        materials_decay_heat.append(material_activity)
+
+    return materials_decay_heat
 
 
 def find_most_abundant_nuclides_in_material(
@@ -312,6 +340,24 @@ def find_most_abundant_nuclides_in_materials(
     return list(sorted_dict.keys())
 
 
+def get_decay_heat_from_materials(nuclides, materials, units):
+    all_nuclides_with_decay_heat = {}
+    for isotope in nuclides:
+        all_quants = []
+        for material in materials:
+            quants = material.get_decay_heat(
+                units=units,
+                by_nuclide=True
+            )
+            if isotope in quants.keys():
+                quant = quants[isotope]
+            else:
+                quant = 0.0
+            all_quants.append(quant)
+        all_nuclides_with_decay_heat[isotope] = all_quants
+    return all_nuclides_with_decay_heat
+
+
 def get_nuclide_atoms_from_materials(nuclides, materials):
     all_nuclides_with_atoms = {}
     for isotope in nuclides:
@@ -332,7 +378,10 @@ def get_nuclide_activities_from_materials(nuclides, materials, units):
     for isotope in nuclides:
         all_quants = []
         for material in materials:
-            quants = material.get_activity(by_nuclide=True, units=units)  # units in Bq
+            quants = material.get_activity(
+                by_nuclide=True,  # units in Bq
+                units=units
+            )
             if isotope in quants.keys():
                 quant = quants[isotope]
             else:

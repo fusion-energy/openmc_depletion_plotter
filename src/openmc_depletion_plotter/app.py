@@ -89,7 +89,7 @@ def main():
 
         activity_or_atoms = st.sidebar.selectbox(
             label="Plot",
-            options=("activity", "number of atoms"),
+            options=("activity", "number of atoms", "decay heat"),
             index=0,
             key="activity_or_atoms",
             help="",
@@ -140,6 +140,14 @@ def main():
                 options=("Bq", "Bq/g", "Bq/cm3"),
                 index=0,
                 key="activity_units",
+                help="",
+            )
+        if activity_or_atoms == "decay heat":
+            decay_heat_units = st.sidebar.selectbox(
+                label="Decay heat units",
+                options=('W', 'W/g', 'W/cm3'),
+                index=0,
+                key="decay_heat_units",
                 help="",
             )
             # todo horizontal_lines
@@ -201,6 +209,23 @@ def main():
                 include_total=include_total,
                 path=materials_file.name,
             )
+        elif activity_or_atoms == "decay heat":
+            print('x_scale line 213 ',x_scale)
+            plot = results.plot_decay_heat_vs_time(
+                excluded_material=material_to_exclude,
+                time_units=time_units,
+                units=decay_heat_units,
+                show_top=show_top,
+                x_scale=x_scale,
+                y_scale=y_scale,
+                include_total=include_total,
+                # x_axis_title=None,
+                plotting_backend=backend,
+                # units="W/g", # TODO add drop down option
+                # threshold=None,
+                title="Decay heat of nuclides in material",
+                material_index=material_index,
+            )
         elif activity_or_atoms == "number of atoms":
             plot = results.plot_atoms_vs_time(
                 # todo allow no materials to be excluded
@@ -221,7 +246,6 @@ def main():
             raise ValueError(
                 'activity_or_atoms must be either "activity" or "number of atoms" to plot'
             )
-
 
         if backend == "matplotlib":
             st.pyplot(plot)
