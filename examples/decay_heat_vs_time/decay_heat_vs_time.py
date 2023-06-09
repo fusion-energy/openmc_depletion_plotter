@@ -8,8 +8,8 @@ import math
 from pathlib import Path
 
 # these should be set to where you have the chain and cross section file saved
-openmc.config['cross_sections'] = '/home/jshimwell/openmc_depletion_plotter/tests/cross_sections.xml'
-openmc.config['chain_file'] = '/home/jshimwell/openmc_depletion_plotter/tests/chain-nndc-b7.1.xml'
+openmc.config['cross_sections'] = Path(__file__).parents[2]/'tests'/'cross_sections.xml'
+openmc.config['chain_file'] = Path(__file__).parents[2]/'tests'/'chain-nndc-b7.1.xml'
 
 # makes a simple material
 my_material = openmc.Material()

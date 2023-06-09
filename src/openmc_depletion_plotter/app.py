@@ -142,6 +142,14 @@ def main():
                 key="activity_units",
                 help="",
             )
+        if activity_or_atoms == "decay heat":
+            decay_heat_units = st.sidebar.selectbox(
+                label="Decay heat units",
+                options=('W', 'W/g', 'W/cm3'),
+                index=0,
+                key="decay_heat_units",
+                help="",
+            )
             # todo horizontal_lines
 
         if number_of_depleted_materials == 1:
@@ -202,9 +210,11 @@ def main():
                 path=materials_file.name,
             )
         elif activity_or_atoms == "decay heat":
-            plot = plot_decay_heat_vs_time(
+            print('x_scale line 213 ',x_scale)
+            plot = results.plot_decay_heat_vs_time(
                 excluded_material=material_to_exclude,
                 time_units=time_units,
+                units=decay_heat_units,
                 show_top=show_top,
                 x_scale=x_scale,
                 y_scale=y_scale,
@@ -236,7 +246,6 @@ def main():
             raise ValueError(
                 'activity_or_atoms must be either "activity" or "number of atoms" to plot'
             )
-
 
         if backend == "matplotlib":
             st.pyplot(plot)

@@ -1,19 +1,18 @@
+import matplotlib.pyplot as plt
+import numpy as np
 import openmc
 import openmc.deplete
-from .utils import add_scale_buttons
-from .utils import find_most_active_nuclides_in_materials
-from .utils import get_nuclide_activities_from_materials
-from .utils import get_nuclide_activities_from_materials
-from .utils import get_decay_heat_from_materials
-from .utils import find_total_activity_in_materials
-from .utils import stable_nuclides
-from .utils import create_base_plot
-from .utils import get_nuclide_atoms_from_materials
-from .utils import find_most_abundant_nuclides_in_materials
-from .utils import find_total_nuclides_in_materials
 import plotly.graph_objects as go
-import numpy as np
-import matplotlib.pyplot as plt
+
+from .utils import (add_scale_buttons, create_base_plot,
+                    find_most_abundant_nuclides_in_materials,
+                    find_most_active_nuclides_in_materials,
+                    find_total_activity_in_materials,
+                    find_total_decay_heat_in_materials,
+                    find_total_nuclides_in_materials,
+                    get_decay_heat_from_materials,
+                    get_nuclide_activities_from_materials,
+                    get_nuclide_atoms_from_materials, stable_nuclides)
 
 lots_of_nuclides = []
 elements = list(openmc.data.ATOMIC_SYMBOL.values())
@@ -215,6 +214,8 @@ def plot_atoms_vs_time(
         fig = plt.figure()
         plt.xlabel(x_axis_title)
         plt.ylabel("Number of atoms")
+        plt.xscale(x_scale)
+        plt.yscale(y_scale)
         plt.title(title)
     else:
         msg = 'only "plotly" and "matplotlib" plotting_backend are supported. {plotting_backend} is not an option'
@@ -330,7 +331,9 @@ def plot_decay_heat_vs_time(
         plt.cla
         fig = plt.figure()
         plt.xlabel(x_axis_title)
-        plt.ylabel("Number of atoms")
+        plt.ylabel(f"Decay heat [{units}]")
+        plt.xscale(x_scale)
+        plt.yscale(y_scale)
         plt.title(title)
     else:
         msg = 'only "plotly" and "matplotlib" plotting_backend are supported. {plotting_backend} is not an option'
@@ -358,27 +361,22 @@ def plot_decay_heat_vs_time(
             else:
                 plt.plot(time_steps, value, label=key)
 
-    # todo
     if include_total:
-        print('Total decay heat not implemented yet')
-        # TODO make find_total_decay_heat_in_materials
-        # total = find_total_nuclides_in_materials(
-        #     all_materials, exclude=excluded_material
-        # )
+        total = find_total_decay_heat_in_materials(
+            materials=all_materials, units=units, exclude=excluded_material
+        )
         if plotting_backend == "plotly":
-            pass
-            # figure.add_trace(
-            #     go.Scatter(
-            #         mode="lines",
-            #         x=time_steps,
-            #         y=total,
-            #         name="total",
-            #         line=dict(dash="longdashdot", color="black"),
-            #     )
-            # )
+            figure.add_trace(
+                go.Scatter(
+                    mode="lines",
+                    x=time_steps,
+                    y=total,
+                    name="total",
+                    line=dict(dash="longdashdot", color="black"),
+                )
+            )
         else:
-            pass
-            # plt.plot(time_steps, total, 'k--', label='total')
+            plt.plot(time_steps, total, 'k--', label='total')
 
     if plotting_backend == "plotly":
         return figure

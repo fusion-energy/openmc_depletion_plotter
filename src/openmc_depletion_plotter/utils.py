@@ -201,7 +201,7 @@ def find_total_activity_in_materials(
     materials,
     exclude=None,
 ):
-    non_excluded_nucs = []
+
     if exclude is None:
         excluded_isotopes = []
     else:
@@ -222,6 +222,34 @@ def find_total_activity_in_materials(
         materials_activities.append(material_activity)
 
     return materials_activities
+
+
+def find_total_decay_heat_in_materials(
+    units,
+    materials,
+    exclude=None,
+):
+
+    if exclude is None:
+        excluded_isotopes = []
+    else:
+        if isinstance(exclude, Iterable):
+            excluded_isotopes = exclude
+        elif isinstance(exclude, openmc.Material):
+            excluded_isotopes = exclude.get_nuclides()
+
+    materials_decay_heat = []
+    for material in materials:
+        material_activity = 0
+        heat = material.get_decay_heat(by_nuclide=True, units=units)
+
+        for key, value in heat.items():
+            if key not in excluded_isotopes:
+                material_activity += value
+
+        materials_decay_heat.append(material_activity)
+
+    return materials_decay_heat
 
 
 def find_most_abundant_nuclides_in_material(
