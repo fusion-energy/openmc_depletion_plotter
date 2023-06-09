@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<materials>
+  <material depletable="true" id="1" volume="4188790.2047863905">
+    <density units="g/cm3" value="10.49"/>
+    <nuclide ao="1" name="Fe56"/>
+  </material>
+</materials>
