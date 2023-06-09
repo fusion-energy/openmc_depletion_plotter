@@ -1,6 +1,4 @@
 
-# based on CoNDERC data
-# https://www-nds.iaea.org/conderc/fusion/element/SS304
 import openmc
 import openmc_depletion_plotter
 import openmc.deplete
